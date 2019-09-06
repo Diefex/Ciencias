@@ -25,53 +25,42 @@ double GetCounter()
 }
 
 int main(){
-	int n=2, m=3;
-	while(n<=1024){
-		int **A, **B, **C;
+	int n=20;
+	while(n<=500){
+		int *A, i, j, h, v;
 		
 		//llenado-------------------
-		A = new int*[n];
-		B = new int*[n];
+		A = new int[n];
 		for(int i=0; i<n; i++){
-			A[i] = new int[m];
-			B[i] = new int[m];
-			for(int j=0; j<m; j++){
-				A[i][j] = (i*n)+j;
-				B[i][j] = (n*m)-((i*n)+j);
-			}
+			A[i] = n-i;
 		}
 		//--------------------------
 		
 	    StartCounter();
-	    //suma----------------------
-	    C = new int*[n];
-	    for(int i=0; i<n; i++){
-	    	C[i] = new int[m];
-			for(int j=0; j<m; j++){
-				C[i][j] = A[i][j] + B[i][j];
+	    //orden---------------------
+	    for(h = 0; h < n/9; h = 3*(h+1));
+		for(; h > 0; h /= 3) {
+			for(i = h; i < n; i += 1) {
+				v = A[i]; 
+				j = i;
+				while(j >= h && A[j-h] > v) {
+					A[j] = A[j-h];
+					j -= h; 
+				}
+				A[j] = v;
 			}
 		}
 	    //--------------------------
-	    cout << "suma "<<n<<"x"<<m<<" Tomo: " << GetCounter() <<" ms \n \n";
-	    
-	    /*for(int i=0; i<n; i++){
-			for(int j=0; j<m; j++){
-				cout << C[i][j];
-			}
-			cout<<endl;
-		}*/
-		//Borrado------------------
+	    cout << "orden "<<n<<" Tomo: " << GetCounter() <<" ms \n \n";
+	    /*
 		for(int i=0; i<n; i++){
-			delete A[i];
-			delete B[i];
-			delete C[i];
+			cout << A[i] << ",";
 		}
+		*/
+		//Borrado------------------
 		delete []A;
-		delete []B;
-		delete []C;
 		//--------------------------
-		n *= 2;
-		m *= 2;
+		n += 10;
 		
 	}
     return 0;
