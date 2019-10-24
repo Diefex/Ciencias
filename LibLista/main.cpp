@@ -1,19 +1,39 @@
 #include <iostream>
 #include "Lista.h"
 
+using namespace std;
+
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
+template<typename T>
+void imprimir(Lista<T> * lista)  {
+	for(int i = 0; i < lista -> tamanio_lista(); i++) {
+		cout << lista -> imprimir(i) << endl;
+	}
+}
 
 int main(int argc, char** argv) {
 	
-	Lista<int> *lista = new Lista<int>();
+	Lista<char> *lista = new Lista<char>();
 	
-	cout<<lista -> lista_vacia();
-	//lista -> insertar(1,0);
-	//lista -> insertar(1,1);
-	//lista -> insertar(1,2);
-	lista -> insertar(2,1);
-	lista -> insertar(1,-5);
-	cout<<lista -> lista_vacia();
+	lista -> insertar('a',0);
+	lista -> insertar('b',1);
+	lista -> insertar('c',2);
+	lista -> insertar('d',3);
+	lista -> insertar('e',4);
+	
+	imprimir(lista);
+	
+	cout << endl;
+	
+	lista -> eliminar(4);
+	
+	imprimir(lista);
+	
+	cout << endl;
+	
+	lista -> eliminar(0);
+	
+	imprimir(lista);
 	
 	return 0;
 }

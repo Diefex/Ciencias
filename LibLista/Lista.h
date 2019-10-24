@@ -1,12 +1,10 @@
 #ifndef LISTA_H
 #define LISTA_H
 
-using namespace std;
-
 template <class T>
 struct nodo {
 	nodo <T> * sig;
-	T info;	
+	T info;
 };
 
 template <class T>
@@ -23,13 +21,16 @@ public:
 	
 	int tamanio_lista();
 	
-	void insertar_cabeza(nodo <T> *nodo_nuevo);
-	
-	void insertar_cola(nodo <T> *nodo_nuevo);
-	
 	void insertar(T info_nueva, int pos);
 	
 	bool eliminar(int pos);
+	
+	T imprimir(int pos);
+	
+private:
+	void insertar_cabeza(nodo <T> *nodo_nuevo);
+	
+	void insertar_cola(nodo <T> *nodo_nuevo);
 	
 	~Lista();
 	
@@ -96,8 +97,41 @@ void Lista<T>::insertar_cola(nodo <T> *nodo_nuevo) {
 		nodo <T> * aux = cab;
 	for(int i =0; i < tam-1; i++)
 		aux = aux -> sig;
-	aux -> sig = nodo_nuevo;
+		aux -> sig = nodo_nuevo;
 	}
+}
+
+template<typename T>
+bool Lista<T>::eliminar(int pos) {
+	if(pos > 0 && pos < tam) {
+		nodo<T> *aux = cab;
+		nodo<T> *aux1 = NULL;
+		for(int i = 0; i < pos-1; i++) {
+			aux = aux -> sig;
+		}
+		aux1 = aux -> sig;
+		aux -> sig = aux1 -> sig;
+		delete [] aux1;
+		tam--;
+		return true;
+	}else if(pos == 0) {
+		nodo<T> *aux = cab;
+		cab = aux -> sig;
+		delete [] aux;
+		tam--;
+		return true;
+	}else {
+		return false;
+	}
+}
+
+template<typename T>
+T Lista<T>::imprimir(int pos) {
+	nodo<T> *aux = cab;
+	for(int i = 0; i < pos; i++) {
+		aux = aux -> sig;
+	}
+	return aux -> info;
 }
 
 #endif
