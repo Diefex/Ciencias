@@ -19,10 +19,21 @@ int main(){
 	t.insertar(120);
 	t.insertar(200);
 	
+	t.eliminar(75);
+	
+	t.insertar(76);
+	
+	t.eliminar(50);
+	
+	t.insertar(20);
+	
 	for (int i=0; i<12; i++){
 		nodoA<int> n = t.getNodo(i);
 		cout<<n.dato<<" "<<n.izq<<" "<<n.der<<endl;
 	}
+	
+	nodoA<int> n = t.getNodo(t.buscar(75));
+	cout<<"encontrado: "<<n.dato<<" "<<n.izq<<" "<<n.der<<endl;
 	
 	return 0;
 }

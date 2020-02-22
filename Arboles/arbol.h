@@ -18,6 +18,9 @@ class Arbol{
 		}
 		
 		void insertar(T dato);
+		int buscar(T dato);
+		int buscarPadre(T dato);
+		void eliminar(T dato);
 		nodoA<T> getNodo(int pos);
 };
 
@@ -44,6 +47,85 @@ void Arbol<T>::insertar(T dato){
 		nodos[aux].izq = pos;
 	} else {
 		nodos[aux].der = pos;
+	}
+}
+
+template <class T>
+int Arbol<T>::buscar(T dato){
+	int i = nodos[0].izq;
+	do{
+		if(dato < nodos[i].dato){
+			i = nodos[i].izq;
+		} else {
+			i = nodos[i].der;
+		}
+	}while(dato!=nodos[i].dato);
+	return i;
+}
+
+template <class T>
+int Arbol<T>::buscarPadre(T dato){
+	int i = nodos[0].izq;
+	int aux = i;
+	do{
+		aux = i;
+		if(dato < nodos[i].dato){
+			i = nodos[i].izq;
+		} else {
+			i = nodos[i].der;
+		}
+	}while(dato!=nodos[i].dato);
+	return aux;
+}
+
+template <class T>
+void Arbol<T>::eliminar(T dato){
+	int aux = buscar(dato);
+	if(nodos[aux].izq == 0 && nodos[aux].der == 0){
+		int padre = buscarPadre(nodos[aux].dato);
+		if(nodos[aux].dato < nodos[padre].dato){
+			nodos[padre].izq = 0;
+		} else {
+			nodos[padre].der = 0;
+		}
+		nodos[aux].der = nodos[0].der;
+		nodos[0].der = aux;
+	}
+	if(nodos[aux].izq != 0 && nodos[aux].der == 0){
+		int padre = buscarPadre(nodos[aux].dato);
+		if(nodos[aux].dato < nodos[padre].dato){
+			nodos[padre].izq = nodos[aux].izq;
+		} else {
+			nodos[padre].der = nodos[aux].izq;
+		}
+		nodos[aux].der = nodos[0].der;
+		nodos[0].der = aux;
+	}
+	if(nodos[aux].izq == 0 && nodos[aux].der != 0){
+		int padre = buscarPadre(nodos[aux].dato);
+		if(nodos[aux].dato < nodos[padre].dato){
+			nodos[padre].izq = nodos[aux].der;
+		} else {
+			nodos[padre].der = nodos[aux].der;
+		}
+		nodos[aux].der = nodos[0].der;
+		nodos[0].der = aux;
+	}
+	if(nodos[aux].izq != 0 && nodos[aux].der != 0){
+		int i = aux;
+		while(nodos[nodos[i].izq].izq!=0){
+			i = nodos[i].izq;
+		}
+		i = nodos[i].der;
+		int padre = buscarPadre(nodos[i].dato);
+		if(nodos[i].dato < nodos[padre].dato){
+			nodos[padre].izq = 0;
+		} else {
+			nodos[padre].der = 0;
+		}
+		nodos[aux].dato = nodos[i].dato;
+		nodos[i].der = nodos[0].der;
+		nodos[0].der = i;
 	}
 }
 
