@@ -20,7 +20,8 @@ class Arbol{
 	nodo<T> *raiz;
 	bool insertar(T dato, nodo<T> *h);
 	nodo<T>* buscar(T dato, nodo<T> *h);
-	bool eliminar(T dato, nodo<T> *h);
+	bool eliminar(nodo<T> *x);
+	bool fixElim(nodo<T> *x);
 	nodo<T>* buscarPadre(nodo<T> *x, nodo<T> *p);
 	public:
 		Arbol(){raiz = NULL;}
@@ -75,6 +76,103 @@ bool Arbol<T>::insertar(T dato, nodo<T> *h){
 }
 
 template <class T>
+bool Arbol<T>::eliminar(T dato){
+	eliminar(buscar(dato));
+}
+
+template <class T>
+bool Arbol<T>::eliminar(nodo<T> *x){
+	fixElim(x);
+	nodo<T> *r = x;
+	if(x->izq != NULL && x->der != NULL){
+		x=x->der;
+		while(x->izq!=NULL)x->izq;
+		r->dato = x->dato;
+		eliminar(x);
+		return true;
+	}
+	
+	if(x->izq!=NULL && x->der==NULL){
+		x = x->izq;
+	} else if (x->izq==NULL && x->der!=NULL){
+		x = x->der;
+	} else {
+		x = NULL;
+	}
+	
+	nodo<T> *p = buscarPadre(r);
+	if(p!=NULL){
+		if(p->izq == r)p->izq = x; else p->der = x;
+		cout<<"eliminando, p: "<<p->dato<<endl;
+		if(x==NULL)cout<<"x nulo"<<endl;
+	} else {
+		raiz = x;
+	}
+	
+	return true;
+	
+}
+
+template <class T>
+bool Arbol<T>::fixElim(nodo<T> *x){
+	nodo<T> *w;
+	while(x!=raiz && !x->color){
+		nodo<T> *p = buscarPadre(x);
+		if(x == p->izq) {
+			w = p->der;
+			if(w!=NULL && w->color){
+				w->color = 0;
+				p->color = 1;
+				rot_izq(p);
+				w = p->der;
+			}
+			if((w->izq==NULL && w->der==NULL)||((w->izq!=NULL && w->der!=NULL)&&(!w->izq->color && !w->der->color))){
+				w->color = 1;
+				x = p;
+			} else {
+				if(w->der==NULL || !w->der->color){
+					w->izq->color = 0;
+					w->color = 1;
+					rot_der(w);
+					w = p->der;
+				}
+				w->color = p->color;
+				p->color = 0;
+				w->der->color = 0;
+				rot_izq(p);
+				x = raiz;
+			}
+		} else {
+			w = p->izq;
+			if(w!=NULL && w->color){
+				w->color = 0;
+				p->color = 1;
+				rot_der(p);
+				w = p->izq;
+			}
+			if((w->der==NULL && w->izq==NULL)||(!w->der->color && !w->izq->color)){
+				w->color = 1;
+				x = p;
+			} else {
+				if(w->izq==NULL || !w->izq->color){
+					w->der->color = 0;
+					w->color = 1;
+					rot_izq(w);
+					w = p->izq;
+				}
+				w->color = p->color;
+				p->color = 0;
+				w->izq->color = 0;
+				rot_der(p);
+				x = raiz;
+			}
+		}
+	}
+	x->color = 0;
+	return true;
+}
+
+template <class T>
 nodo<T>* Arbol<T>::buscar(T dato){
 	return buscar(dato, raiz);
 }
@@ -92,6 +190,7 @@ nodo<T>* Arbol<T>::buscar(T dato, nodo<T> *h){
 	} else {
 		return buscar(dato, h->der);
 	}
+	return NULL;
 }
 
 template <class T>
