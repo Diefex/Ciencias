@@ -10,77 +10,112 @@ class Arbol;
 
 template <class T>
 struct nodo {
-	string nombre;
-	T estructura;
+	string llave;
+	T* datos;
 	nodo<T> *izq, *der;
 };
 
 template<class T>
-class Arbol{
+class Lista{
 	nodo<T> *raiz;
-	bool insertar(string nombre, nodo<T> *h);
-	nodo<T>* buscar(string nombre, nodo<T> *h);
-	bool eliminar(string nombre, nodo<T> *h);
+	nodo<T>* insertar(string llave, nodo<T> *h);
+	bool insertar(nodo<T>* nuevo, nodo<T> *h);
+	nodo<T>* buscar(string llave, nodo<T> *h);
+	bool eliminar(string llave, nodo<T> *h);
 	public:
-		Arbol(){raiz = NULL;}
-		bool insertar(string nombre);
-		nodo<T>* buscar(string nombre);
-		bool eliminar(string nombre);
+		Lista(){raiz = NULL;}
+		nodo<T>* insertar(string llave);
+		bool insertar(nodo<T>* nuevo);
+		nodo<T>* buscar(string llave);
+		bool eliminar(string llave);
 };
 
 template <class T>
-bool Arbol<T>::insertar(string nombre){
-	return insertar(nombre, raiz);
+nodo<T>* Lista<T>::insertar(string llave){
+	return insertar(llave, raiz);
 }
 
 template<class T>
-bool Arbol<T>::insertar(string nombre, nodo<T> *h){
+nodo<T>* Lista<T>::insertar(string llave, nodo<T> *h){
 	if(h == NULL){
 		nodo<T> *nuevo = new nodo<T>;
-		nuevo->nombre = nombre;
+		nuevo->llave = llave;
 		nuevo->izq = nuevo->der = NULL;
+		nuevo->datos = new T;
 		raiz = nuevo;
-		return true;
+		return raiz;
 	}
-	if(nombre < h->nombre){
+	if(llave < h->llave){
 		if(h->izq == NULL){
 			nodo<T> *nuevo = new nodo<T>;
-			nuevo->nombre = nombre;
+			nuevo->llave = llave;
 			nuevo->izq = nuevo->der = NULL;
+			nuevo->datos = new T;
 			h->izq = nuevo;
+			return nuevo;
 		} else {
-			insertar(nombre, h->izq);
+			return insertar(llave, h->izq);
 		}
 	} else {
 		if(h->der == NULL){
 			nodo<T> *nuevo = new nodo<T>;
-			nuevo->nombre = nombre;
+			nuevo->llave = llave;
 			nuevo->izq = nuevo->der = NULL;
+			nuevo->datos = new T;
 			h->der = nuevo;
+			return nuevo;
 		} else {
-			insertar(nombre, h->der);
+			return insertar(llave, h->der);
 		}
 	}
-	return true;
 }
 
 template <class T>
-nodo<T>* Arbol<T>::buscar(string nombre){
-	return buscar(nombre, raiz);
+bool Lista<T>::insertar(nodo<T>* nuevo){
+	return insertar(nuevo, raiz);
+}
+
+template<class T>
+bool Lista<T>::insertar(nodo<T>* nuevo, nodo<T> *h){
+	if(h == NULL){
+		raiz = nuevo;
+		return raiz;
+	}
+	if(nuevo->llave < h->llave){
+		if(h->izq == NULL){
+			h->izq = nuevo;
+			return nuevo;
+		} else {
+			return insertar(nuevo, h->izq);
+		}
+	} else {
+		if(h->der == NULL){
+			h->der = nuevo;
+			return nuevo;
+		} else {
+			return insertar(nuevo, h->der);
+		}
+	}
+	return false;
 }
 
 template <class T>
-nodo<T>* Arbol<T>::buscar(string nombre, nodo<T> *h){
+nodo<T>* Lista<T>::buscar(string llave){
+	return buscar(llave, raiz);
+}
+
+template <class T>
+nodo<T>* Lista<T>::buscar(string llave, nodo<T> *h){
 	if(h == NULL){
 		return NULL;
 	}
-	if(nombre == h->nombre){
+	if(llave == h->llave){
 		return h;
 	}
-	if(nombre < h->nombre){
-		return buscar(nombre, h->izq);
+	if(llave < h->llave){
+		return buscar(llave, h->izq);
 	} else {
-		return buscar(nombre, h->der);
+		return buscar(llave, h->der);
 	}
 }
 
