@@ -4,14 +4,14 @@
 #include "lista.h"
 
 struct hijo{
-	
+	int edad;
 };
 
 struct persona{
 	string nombre;
 	string apellido;
 	string tipoID;
-	char genero;
+	string genero;
 	string telCelular;
 	string telFijo;
 	string email;
@@ -20,27 +20,27 @@ struct persona{
 	string paisNac;
 	string direccion;
 	string labor;
-	Lista<hijo> hijos;
+	Arbol<hijo> hijos;
 };
 
 struct iglesia{
 	string lider;
 	string direccion;
 	string barrio;
-	Lista<persona> personas;
+	Arbol<persona> personas;
 };
 
 struct barrio{
-	Lista<persona> personas;
+	Arbol<persona> personas;
 };
 
 struct localidad{
-	Lista<barrio> barrios;
-	Lista<iglesia> iglesias;
+	Arbol<barrio> barrios;
+	Arbol<iglesia> iglesias;
 };
 
 struct ciudad{
-	Lista<localidad> localidades;	
+	Arbol<localidad> localidades;	
 };
 
 #endif
