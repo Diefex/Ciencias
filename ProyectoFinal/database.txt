@@ -18,4 +18,4 @@ Pasto Cuajacal Hullaguanga San_nicolas_de_tolentino 1004567890 Ana Varela TI F 3
 Riohacha Barbacoas Villa_jardin San_martin_de_porres 328649015 Luciana Torres CC F 320-467-37-56 637-32-98 ojesusni20@hotmail.com 28/02/1969 Chia Colombia cr_22_17_31 Ingenieria -1
 Neiva La_floresta El_vergel Nuestra_senora_de_manare 759395 Ahmned Coronell CE M 311-256-34-57 329-36-02 catedralsanjose@hotmail.com 27/12/1943 Ottawa Canada cr_56a_51_81 Artes -1
 Tunja Centro_historico Pinos_de_oriente Parroquia_el_senor_de_los_milagros 45821087 Mario Portilla CC M 321-492-08-88 893-56-19 padremario2020@outlook.com 15/11/1082 Duitama Colombia cr_8a_07_88 Salud -1
-Bogota Fontibon Recodo Parroquia_Nazaret 11111111 David Bohorquez CC M 222222 33333333 blueplayer-10@hotmail.com 00/11/2222 BogotaColombia cll_14b_119a_17 Ingenieria 2 4 -1
+Bogota Fontibon Recodo Parroquia_Nazaret 11111111 David Bohorquez CC M 222222 33333333 blueplayer-10@hotmail.com 00/11/2222 Bogota Colombia cll_14b_119a_17 Ingenieria 2 4 -1

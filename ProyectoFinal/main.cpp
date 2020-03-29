@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <conio.h>
 #include "estructuras.h"
 #include "lista.h"
 #include "cola.h"
@@ -18,6 +19,7 @@ Arbol<ciudad> buildIglesias(Arbol<ciudad> ciudades){
 	*/
 	ifstream fe("iglesias.txt");
 	string dato;
+	int l = 0;
 	while(!fe.eof()) {
         fe >> dato;
         nodo<ciudad>* ciudad = ciudades.buscar(dato);
@@ -49,9 +51,11 @@ Arbol<ciudad> buildIglesias(Arbol<ciudad> ciudades){
 		ig->datos->barrio = barrio->llave;
 		
 		localidad->datos->iglesias.insertar(ig);
+		l++;
+		cout<<"creada la iglesia: "<<ig->llave<<" en la linea "<<l<<endl;
    }
    fe.close();
-   
+   getch();
    return ciudades;
 }
 
@@ -222,16 +226,14 @@ nodo<iglesia>* find_iglesia(nodo<ciudad>* raiz, string llave) {
 
 void recorrer_1(nodo<persona>* raiz, int* rango1Ptr, int* rango2Ptr, int* rango3Ptr, int* rango4Ptr) {
 	if(raiz!=NULL) {
-		cout<<raiz->datos->nombre<<": ";
-		nodo<hijo>* h = raiz->datos->hijos.buscar(/*raiz->datos->hijos.getRaiz()*/"0");
+		nodo<hijo>* h = raiz->datos->hijos.buscar("0");
 		int i = 0;
+		bool r_1=false, r_2=false, r_3=false, r_4=false;
 		while(h!=NULL) {
-			cout<<h->datos->edad<<", ";
-			
-			if(h->datos->edad >= 0 && h->datos->edad <= 5) *rango1Ptr+=1;
-			else if(h->datos->edad >= 6 && h->datos->edad <= 10) *rango2Ptr+=1;
-			else if(h->datos->edad >= 11 && h->datos->edad <= 18) *rango3Ptr+=1;
-			else if(h->datos->edad > 18) *rango4Ptr+=1;
+			if(h->datos->edad >= 0 && h->datos->edad <= 5 && !r_1){*rango1Ptr+=1; r_1=true;}
+			else if(h->datos->edad >= 6 && h->datos->edad <= 10 && !r_2){*rango2Ptr+=1; r_2=true;}
+			else if(h->datos->edad >= 11 && h->datos->edad <= 18 && !r_3){*rango3Ptr+=1; r_3=true;}
+			else if(h->datos->edad > 18 && !r_4){*rango4Ptr+=1; r_4=true;}
 			i++;
 	   		stringstream ss;
 	   		ss<<i;
@@ -239,8 +241,6 @@ void recorrer_1(nodo<persona>* raiz, int* rango1Ptr, int* rango2Ptr, int* rango3
 	   		ss>>llave;
 	   		h = raiz->datos->hijos.buscar(llave);
 		}
-		//if(raiz->izq==NULL)cout<<"izqNULL\n";
-		//cout<<((raiz->der==NULL)?"derNULL":raiz->der->datos->nombre )<<endl;
 		recorrer_1(raiz->izq, rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
 		recorrer_1(raiz->der, rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
 	}
@@ -541,15 +541,120 @@ void eliminarIglesia() {
 	
 }
 
+void consultas(Arbol<ciudad> ciudades){
+	cout<<"\n Consultas";
+	cout<<"\n=====================";
+	cout<<"\n 1. Número total de personas que asisten a una iglesia";
+	cout<<"\n 2. Listado de los nombres y apellidos de aquellos que tienen  un número de hijos";
+	cout<<"\n 3. Nombre y apellidos de las personas que viven en una ciudad";
+	cout<<"\n 4. Número de iglesias a las que asiste un número de personas superior a un número";
+	cout<<"\n 5. Número de hombres y el número de mujeres que asisten a las diferentes iglesias";
+	cout<<"\n 6. Lista de feligreses de esa edad";
+	cout<<"\n 0. Salir\n";
+	char op;
+	cin>> op;
+	system("cls");
+	switch(op){
+		case '1':{
+			string nIglesia;
+			cout<<"Ingrese el nombre de la Iglesia: ";
+			cin>>nIglesia;
+			nodo<iglesia>* ig = find_iglesia(ciudades.getRaiz(), nIglesia);
+			int rango1 = 0, rango2 = 0, rango3 = 0, rango4 = 0;
+   			int* rango1Ptr = &rango1; int* rango2Ptr = &rango2; int* rango3Ptr = &rango3; int* rango4Ptr = &rango4;
+		   	recorrer_1(ig->datos->personas.getRaiz(), rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
+		   	cout<<"\nrango(0, 5): "<<rango1<<" personas. \nrango(6, 10): "<<rango2<<" personas. \nrango(11, 18): "<<rango3<<" personas. \nrango(mayor a 18): "<<rango4<<" personas."<<endl;
+		   	getch();
+			break;
+		}
+		case '2':{
+			int inf = 0, sup = 0;
+			cout<<"Ingrese un rango de numero de hijos:\n";
+			cout<<"desde: ";
+			cin>>inf;
+			cout<<"\nhasta: ";
+			cin>>sup;
+			recorrer_ciudades(ciudades.getRaiz(), inf, sup);
+			getch();
+			break;
+		}
+		case '3':{
+			cout<<"Ingrese una ciudad: ";
+			string nCiudad;
+			cin>>nCiudad;
+			nodo<ciudad>* c = ciudades.buscar(nCiudad);
+			recorrer_localidades_3(c->datos->localidades.getRaiz());
+			getch();
+			break;
+		}
+		case '4':{
+			cout<<"Ingrese un numero maximo de personas: ";
+			int num;
+			cin>>num;
+			int num_ig = 0;
+		   	int* igPtr = &num_ig;
+		   	recorrer_ciudades_4(ciudades.getRaiz(), num, igPtr);
+		   	cout<<"\n Numero Iglesias: "<<num_ig<<endl;
+		   	getch();
+			break;
+		}
+		case '5':{
+			recorrer_ciudades_5(ciudades.getRaiz());
+			break;
+		}
+		case '6':{
+			int inf, sup;
+			cout<<"Seleccione una actividad laboral:\n";
+			cout<<"1. Artes\n";
+			cout<<"2. Ciencias Sociales\n";
+			cout<<"3. Ingenierias\n";
+			cout<<"4. Areas de la Salud\n";
+			cout<<"5. Otros\n";
+			char op2;
+			cin>>op2;
+			string labor;
+			switch(op2){
+				case '1': labor = "Artes"; break;
+				case '2': labor = "Ciencias_sociales"; break;
+				case '3': labor = "Ingenieria"; break;
+				case '4': labor = "Salud"; break;
+				case '5': labor = "Otros"; break;
+			}
+			cout<<"Ingrese un rango de edad:\n";
+			cout<<"desde: ";
+			cin>>inf;
+			cout<<"hasta: ";
+			cin>>sup;
+			recorrer_ciudades_6(ciudades.getRaiz(), inf, sup, labor);
+			getch();
+			break;
+		}
+	}
+}
+
+void ingresar(){
+	cout<<"1. Ingresar Iglesia\n";
+	cout<<"2. Ingresar Feligres\n";
+	char op;
+	cin>>op;
+	switch(op){
+		case '1':
+			break;
+			
+		case '2':
+			break;
+	}
+}
+
 int main() {
 	
 	//crearFeligres();
 	
-	/*Arbol<ciudad> ciudades;
+	Arbol<ciudad> ciudades;
 	
 	ciudades = buildIglesias(ciudades);
 	ciudades = buildFeligreses(ciudades);
-   
+   /*
    nodo<ciudad>* c = ciudades.buscar("Bogota");
    cout<<c->llave<<endl;
    nodo<localidad>* l = c->datos->localidades.buscar("Bosa");
@@ -581,7 +686,6 @@ int main() {
    nodo<iglesia>* ig = find_iglesia(ciudades.getRaiz(), "San_nicolas_de_tolentino");
    if(ig!=NULL)cout<<"iglesia: "<<ig->llave<<endl;
    
-   cout<<"---------------------CONSULTA 2---------------------"<<endl<<endl;
    
    cout<<"RECORRER\n";
    int rango1 = 0, rango2 = 0, rango3 = 0, rango4 = 0;
@@ -589,7 +693,8 @@ int main() {
    recorrer_1(ig->datos->personas.getRaiz(), rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
    cout<<"\nrango(0, 5): "<<rango1<<"\nrango(6, 10): "<<rango2<<"\nrango(11, 18): "
    		<<rango3<<"\nrango(mayor a 18): "<<rango4<<endl;
-   
+   		
+   cout<<"---------------------CONSULTA 2---------------------"<<endl<<endl;
    recorrer_ciudades(ciudades.getRaiz(), 0, 2);
    
    cout<<"---------------------CONSULTA 3---------------------"<<endl<<endl;
@@ -613,24 +718,24 @@ int main() {
 	
    char selection;
    do {
+   	system("CLS");
    	cout<<"\n Menu";
    	cout<<"\n=====================";
-   	cout<<"\n 1. Rango de edades de los hijos";
-   	cout<<"\n 2. Ubicacion";
-   	cout<<"\n 3. Exit";
-   	cout<<"\nopcion: ";
+   	cout<<"\n 1. Consultar";
+   	cout<<"\n 2. Ingresar";
+   	cout<<"\n 3. Eliminar";
+   	cout<<"\n 0. Salir\n";
    	cin>> selection;
-   	
+   	system("CLS");
    	switch(selection){
    		case '1':
+   			consultas(ciudades);
    			break;
    		case '2':
-   			break;
-   		case '3':
-   			break;
+	   		break;		
 	   }
    	
-   }while(selection!='3');
+   }while(selection!='0');
    cout<<"salio";
    return 0;
 }

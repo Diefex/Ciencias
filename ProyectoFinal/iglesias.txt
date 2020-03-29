@@ -3,7 +3,7 @@ Medellin Manrique La_Salle Su_Madre laSuya cra_3_N_2-1
 Cali Aguacatal unBarrioDeCali Su_Abuela Rosa cll_X_N
 Barranquilla Metropolitana Altamira Rosario Pedro_Argote cll_73_13-08
 Villavicencio Panorama Florencia Cristo_sacerdote Frank_Suarez cr_45c_33_56
-Leticia Centro Afasinte San_franciso_de_loretoyacu Ana_Mendez cll 88_32g_44
+Leticia Centro Afasinte San_franciso_de_loretoyacu Ana_Mendez cll_88_32g_44
 Armenia Rufino_cuervo Urbanizacion_el_remanso Parroquia_sagrada_familia_de_nazareth Jesus_Cubides cr_87g_55_96
 Bucaramanga Provenza Palmeras_del_cacique Santuario_san_francisco_javier Tatiana_Cruz cl_54h_74_02
 Sincelejo Morroa las_canarias catedral_de_la_medalla_milagrosa Antonio_Contreras tv_34_66j_98
