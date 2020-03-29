@@ -14,7 +14,8 @@ Monteria Villa_cielo Ranchos_del_inat San_jeronimo_de_monteria 10134558365 Giova
 Yopal La_chaparrera El_fical Iglesia_maria_auxiliadora 78009473 Adolfo Esquivel CC M 313-828-28-04 628-92-95 yopalparroquiama@gmail.com 05/11/1999 Piedecuesta Colombia cr_73g_33_22 Ingenieria 2 6 12 -1
 Florencia Scarperia Oltrarno Parroquia_san_miguel_arcangel 10189847603 Gregorio Acevedo CC M 301-628-84-34 849-07-82 sanmiguelp@hotmail.com 27/04/1953 Cartago Colombia cll_10h_83_78 Ciencias_sociales -1
 Cucuta Arboledas Ciudadela_la_libertad La_inmaculada_concepcion 10124448276 Laureano Baron CE M 312-826-64-09 193-93-04 lainmaculada03@outlook.com 04/10/1998 Lima Peru cl_23_00_36 Ciencias_sociales -1
-Pasto Cuajacal Hullaguanga San_nicolas_de_tolentino 1004567890 Ana Varela TI M 313-405-61-52 633-39-96 psanmigueldetolentino1996@gmai.com 21/02/1939 Ipiales Colombia cll_10_09_78 Otros 2 26 -1
+Pasto Cuajacal Hullaguanga San_nicolas_de_tolentino 1004567890 Ana Varela TI F 313-405-61-52 633-39-96 psanmigueldetolentino1996@gmai.com 21/02/1939 Ipiales Colombia cll_10_09_78 Otros 2 26 -1
 Riohacha Barbacoas Villa_jardin San_martin_de_porres 328649015 Luciana Torres CC F 320-467-37-56 637-32-98 ojesusni20@hotmail.com 28/02/1969 Chia Colombia cr_22_17_31 Ingenieria -1
 Neiva La_floresta El_vergel Nuestra_senora_de_manare 759395 Ahmned Coronell CE M 311-256-34-57 329-36-02 catedralsanjose@hotmail.com 27/12/1943 Ottawa Canada cr_56a_51_81 Artes -1
 Tunja Centro_historico Pinos_de_oriente Parroquia_el_senor_de_los_milagros 45821087 Mario Portilla CC M 321-492-08-88 893-56-19 padremario2020@outlook.com 15/11/1082 Duitama Colombia cr_8a_07_88 Salud -1
+Bogota Fontibon Recodo Parroquia_Nazaret 11111111 David Bohorquez CC M 222222 33333333 blueplayer-10@hotmail.com 00/11/2222 BogotaColombia cll_14b_119a_17 Ingenieria 2 4 -1

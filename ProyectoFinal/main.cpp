@@ -3,6 +3,7 @@
 #include <sstream>
 #include "estructuras.h"
 #include "lista.h"
+#include "cola.h"
 
 using namespace std;
 
@@ -219,19 +220,332 @@ nodo<iglesia>* find_iglesia(nodo<ciudad>* raiz, string llave) {
 	return NULL;
 }
 
-void recorrer(nodo<persona>* raiz) {
+void recorrer_1(nodo<persona>* raiz, int* rango1Ptr, int* rango2Ptr, int* rango3Ptr, int* rango4Ptr) {
 	if(raiz!=NULL) {
-		cout<<raiz->datos->nombre<<endl;
-		if(raiz->izq==NULL)cout<<"izqNULL\n";
-		cout<<((raiz->der==NULL)?"derNULL":raiz->der->datos->nombre )<<endl;
-		recorrer(raiz->izq);
-		recorrer(raiz->der);
+		cout<<raiz->datos->nombre<<": ";
+		nodo<hijo>* h = raiz->datos->hijos.buscar(/*raiz->datos->hijos.getRaiz()*/"0");
+		int i = 0;
+		while(h!=NULL) {
+			cout<<h->datos->edad<<", ";
+			
+			if(h->datos->edad >= 0 && h->datos->edad <= 5) *rango1Ptr+=1;
+			else if(h->datos->edad >= 6 && h->datos->edad <= 10) *rango2Ptr+=1;
+			else if(h->datos->edad >= 11 && h->datos->edad <= 18) *rango3Ptr+=1;
+			else if(h->datos->edad > 18) *rango4Ptr+=1;
+			i++;
+	   		stringstream ss;
+	   		ss<<i;
+	   		string llave;
+	   		ss>>llave;
+	   		h = raiz->datos->hijos.buscar(llave);
+		}
+		//if(raiz->izq==NULL)cout<<"izqNULL\n";
+		//cout<<((raiz->der==NULL)?"derNULL":raiz->der->datos->nombre )<<endl;
+		recorrer_1(raiz->izq, rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
+		recorrer_1(raiz->der, rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
 	}
+}
+
+void recorrer_personas(nodo<persona>* raiz, int cota_inferior, int cota_superior) {
+	if(raiz!=NULL) {
+		if(raiz->datos->hijos.getNumNodos() >= cota_inferior && raiz->datos->hijos.getNumNodos() <= cota_superior){
+			cout<<"\t\t"<<raiz->datos->nombre<<" "<<raiz->datos->apellido<<endl;
+		}
+		recorrer_personas(raiz->izq, cota_inferior, cota_superior);
+		recorrer_personas(raiz->der, cota_inferior, cota_superior);
+	}
+}
+
+void recorrer_barrios(nodo<barrio>* raiz, int cota_inferior, int cota_superior) {
+	if(raiz!=NULL) {
+		recorrer_personas(raiz->datos->personas.getRaiz(), cota_inferior, cota_superior);
+		recorrer_barrios(raiz->izq, cota_inferior, cota_superior);
+		recorrer_barrios(raiz->der, cota_inferior, cota_superior);
+	}
+}
+
+void recorrer_localidades(nodo<localidad>* raiz, int cota_inferior, int cota_superior) {
+	if(raiz!=NULL) {
+		cout<<"\t LOCALIDAD: "<<raiz->llave<<endl;
+		recorrer_barrios(raiz->datos->barrios.getRaiz(), cota_inferior, cota_superior);
+		recorrer_localidades(raiz->izq, cota_inferior, cota_superior);
+		recorrer_localidades(raiz->der, cota_inferior, cota_superior);
+	}
+}
+
+void recorrer_ciudades(nodo<ciudad>* raiz, int cota_inferior, int cota_superior) {
+	if(raiz!=NULL) {
+		cout<<"CIUDAD: "<<raiz->llave<<endl;
+		recorrer_localidades(raiz->datos->localidades.getRaiz(), cota_inferior, cota_superior);
+		recorrer_ciudades(raiz->izq, cota_inferior, cota_superior);
+		recorrer_ciudades(raiz->der, cota_inferior, cota_superior);
+	}
+}
+
+void recorrer_personas_3(nodo<persona>* raiz, cola<nodo<persona>*>* artes, cola<nodo<persona>*>* ciencias_soc, cola<nodo<persona>*>* ingenierias, cola<nodo<persona>*>* salud, cola<nodo<persona>*>* otros) {
+	
+	if(raiz!=NULL) {
+		if(raiz->datos->labor == "Artes") {
+			artes->InsCola(raiz);
+		}else if(raiz->datos->labor == "Ciencias_sociales") {
+			ciencias_soc->InsCola(raiz);
+		}else if(raiz->datos->labor == "Ingenieria") {
+			ingenierias->InsCola(raiz);
+		}else if(raiz->datos->labor == "Salud") {
+			salud->InsCola(raiz);
+		}else if(raiz->datos->labor == "Otros"){
+			otros->InsCola(raiz);
+		}
+		recorrer_personas_3(raiz->izq, artes, ciencias_soc, ingenierias, salud, otros);
+		recorrer_personas_3(raiz->der, artes, ciencias_soc, ingenierias, salud, otros);
+	}
+}
+
+void recorrer_barrios_3(nodo<barrio>* raiz, cola<nodo<persona>*>* artes, cola<nodo<persona>*>* ciencias_soc, cola<nodo<persona>*>* igenierias, cola<nodo<persona>*>* salud, cola<nodo<persona>*>* otros) {
+	if(raiz!=NULL) {
+		recorrer_personas_3(raiz->datos->personas.getRaiz(), artes, ciencias_soc, igenierias, salud, otros);
+		recorrer_barrios_3(raiz->izq, artes, ciencias_soc, igenierias, salud, otros);
+		recorrer_barrios_3(raiz->der, artes, ciencias_soc, igenierias, salud, otros);
+	}
+}
+
+void recorrer_localidades_3(nodo<localidad>* raiz) {
+	if(raiz!=NULL) {
+		cola<nodo<persona>*>* artes = new cola<nodo<persona>*>; 
+		cola<nodo<persona>*>* ciencias_soc = new cola<nodo<persona>*>;
+		cola<nodo<persona>*>* ingenierias = new cola<nodo<persona>*>; 
+		cola<nodo<persona>*>* salud = new cola<nodo<persona>*>; 
+		cola<nodo<persona>*>* otros = new cola<nodo<persona>*>;
+		cout<<"\nLOCALIDAD: "<<raiz->llave<<endl;
+		recorrer_barrios_3(raiz->datos->barrios.getRaiz(), artes, ciencias_soc, ingenierias, salud, otros);
+		nodo<persona>* aux;
+		cout<<"\tArtes: ";
+		while(!artes->ColaVacia()) {
+			aux = artes->AtenderCola();
+			cout<<" "<<aux->datos->nombre<<" "<<aux->datos->apellido<<", ";
+		}
+		cout<<"\n\tCiencias Sociales: ";
+		while(!ciencias_soc->ColaVacia()) {
+			aux = ciencias_soc->AtenderCola();
+			cout<<" "<<aux->datos->nombre<<" "<<aux->datos->apellido<<", ";
+		}
+		cout<<"\n\tIngenierias: ";
+		while(!ingenierias->ColaVacia()) {
+			aux = ingenierias->AtenderCola();
+			cout<<" "<<aux->datos->nombre<<" "<<aux->datos->apellido<<", ";
+		}
+		cout<<"\n\tSalud: ";
+		while(!salud->ColaVacia()) {
+			aux = salud->AtenderCola();
+			cout<<" "<<aux->datos->nombre<<" "<<aux->datos->apellido<<", ";
+		}
+		cout<<"\n\tOtros: ";
+		while(!otros->ColaVacia()) {
+			aux = otros->AtenderCola();
+			cout<<" "<<aux->datos->nombre<<" "<<aux->datos->apellido<<", ";
+		}
+		cout<<endl;
+		recorrer_localidades_3(raiz->izq);
+		recorrer_localidades_3(raiz->der);
+	}
+}
+
+void recorrer_ciudades_3(nodo<ciudad>* raiz) {
+	if(raiz!=NULL) {
+		recorrer_localidades_3(raiz->datos->localidades.getRaiz());
+		recorrer_ciudades_3(raiz->izq);
+		recorrer_ciudades_3(raiz->der);
+	}
+}
+
+void recorrer_iglesias(nodo<iglesia>* raiz, int num, cola<nodo<iglesia>*>* ig) {
+	if(raiz!=NULL) {
+		if(raiz->datos->personas.getNumNodos() > num) {
+			ig->InsCola(raiz);
+		}
+		recorrer_iglesias(raiz->izq, num, ig);
+		recorrer_iglesias(raiz->der, num, ig);
+	}
+}
+
+void recorrer_localidades_4(nodo<localidad>* raiz, int num, int* contPtr) {
+	cola< nodo<iglesia>* >* ig = new cola< nodo<iglesia>* >;
+	if(raiz!=NULL) {
+		recorrer_iglesias(raiz->datos->iglesias.getRaiz(), num, ig);
+		*contPtr+=ig->getTam();
+		while(!ig->ColaVacia()) {
+			nodo<iglesia>* aux = ig->AtenderCola();
+			cout<<"IGLESIA: "<<aux->llave<<endl;
+			cout<<"\tNumero de personas: "<<aux->datos->personas.getNumNodos()<<" \n\tNombre del sacerdote: "<<aux->datos->lider<<" \n\tLocalidad: "<<raiz->llave<<endl;
+		}
+		recorrer_localidades_4(raiz->izq, num, contPtr);
+		recorrer_localidades_4(raiz->der, num, contPtr);
+	}
+}
+
+void recorrer_ciudades_4(nodo<ciudad>* raiz, int num, int* contPtr) {
+	if(raiz!=NULL) {
+		recorrer_localidades_4(raiz->datos->localidades.getRaiz(), num, contPtr);
+		recorrer_ciudades_4(raiz->izq, num, contPtr);
+		recorrer_ciudades_4(raiz->der, num, contPtr);
+	}
+}
+
+void recorrer_personas_5(nodo<persona>* raiz, int* hPtr, int* mPtr) {
+	if(raiz!=NULL) {
+		if(raiz->datos->genero == "M") {
+			*hPtr+=1;
+		}else {
+			*mPtr+=1;
+		}
+		recorrer_personas_5(raiz->izq, hPtr, mPtr);
+		recorrer_personas_5(raiz->der, hPtr, mPtr);
+	}
+}
+
+void recorrer_iglesias_5(nodo<iglesia>* raiz) {
+	if(raiz!=NULL) {
+		int h, m = 0;
+		int* hPtr = &h; int* mPtr = &m;
+		recorrer_personas_5(raiz->datos->personas.getRaiz(), hPtr, mPtr);
+		cout<<"\t\tIGLESIA: "<<raiz->llave<<endl;
+		cout<<"\t\t\tHombres: "<<*hPtr<<endl;
+		cout<<"\t\t\tMujeres: "<<*mPtr<<endl;
+		recorrer_iglesias_5(raiz->izq);
+		recorrer_iglesias_5(raiz->der);
+	}
+}
+
+void recorrer_localidades_5(nodo<localidad>* raiz) {
+	if(raiz!=NULL) {
+		cout<<"\tLOCALIDAD: "<<raiz->llave<<endl;
+		recorrer_iglesias_5(raiz->datos->iglesias.getRaiz());
+		recorrer_localidades_5(raiz->izq);
+		recorrer_localidades_5(raiz->der);
+	}
+}
+
+void recorrer_ciudades_5(nodo<ciudad>* raiz) {
+	if(raiz!=NULL) {
+		cout<<"CIUDAD: "<<raiz->llave<<endl;
+		recorrer_localidades_5(raiz->datos->localidades.getRaiz());
+		recorrer_ciudades_5(raiz->izq);
+		recorrer_ciudades_5(raiz->der);
+	}
+}
+
+int calcular_edad(string fecha) {
+	string a;	
+	for(int i=6;i<=fecha.length();i++) {
+		a+=fecha[i];
+	}
+	stringstream g(a);
+	int x = 0;
+	g>>x;
+	x = 2020 - x;
+	
+	return x;
+}
+
+void recorrer_personas_6(nodo<persona>* raiz, int cota_i, int cota_s, string actividad) {
+	if(raiz!=NULL) {
+		int edad = calcular_edad(raiz->datos->fechaNac);
+		if((edad >= cota_i && edad <= cota_s) && (raiz->datos->labor == actividad)) {
+			cout<<"\t\t"<<raiz->datos->nombre<<" "<<raiz->datos->apellido<<endl;
+		}
+		recorrer_personas_6(raiz->izq, cota_i, cota_s, actividad);
+		recorrer_personas_6(raiz->der, cota_i, cota_s, actividad);
+	}
+}
+
+void recorrer_iglesias_6(nodo<iglesia>* raiz, int cota_i, int cota_s, string actividad) {
+	if(raiz!=NULL) {
+		cout<<"\tIGLESIA: "<<raiz->llave<<endl;
+		recorrer_personas_6(raiz->datos->personas.getRaiz(), cota_i, cota_s, actividad);
+		recorrer_iglesias_6(raiz->izq, cota_i, cota_s, actividad);
+		recorrer_iglesias_6(raiz->der, cota_i, cota_s, actividad);
+	}
+	cout<<endl;
+}
+
+void recorrer_barrios_6(nodo<barrio>* raiz, int cota_i, int cota_s, string actividad) {
+	if(raiz!=NULL){
+		cout<<"\tBARRIO: "<<raiz->llave<<endl;
+		recorrer_personas_6(raiz->datos->personas.getRaiz(), cota_i, cota_s, actividad);
+		recorrer_barrios_6(raiz->izq, cota_i, cota_s, actividad);
+		recorrer_barrios_6(raiz->der, cota_i, cota_s, actividad);
+	}
+}
+
+void recorrer_localidades_6(nodo<localidad>* raiz, int cota_i, int cota_s, string actividad) {
+	if(raiz!=NULL) {
+		cout<<"LOCALIDAD: "<<raiz->llave<<endl;
+		recorrer_barrios_6(raiz->datos->barrios.getRaiz(), cota_i, cota_s, actividad);
+		recorrer_iglesias_6(raiz->datos->iglesias.getRaiz(), cota_i, cota_s, actividad);
+		recorrer_localidades_6(raiz->izq, cota_i, cota_s, actividad);
+		recorrer_localidades_6(raiz->der, cota_i, cota_s, actividad);
+	}
+}
+
+void recorrer_ciudades_6(nodo<ciudad>* raiz, int cota_i, int cota_s, string actividad) {
+	if(raiz!=NULL) {
+		recorrer_localidades_6(raiz->datos->localidades.getRaiz(), cota_i, cota_s, actividad);
+		recorrer_ciudades_6(raiz->izq, cota_i, cota_s, actividad);
+		recorrer_ciudades_6(raiz->der, cota_i, cota_s, actividad);
+	}
+}
+
+void crearIglesia(string ciudad, string localidad, string barrio, string nombre, string lider, string direccion) {
+	ofstream myfile;
+	myfile.open ("iglesias.txt", ios::app);
+	//myfile << "Bogota Fontibon Recodo Parroquia_Nazaret Alberto_Linero cll_14B_#119-17" <<endl;
+	myfile << ciudad << " " << localidad << " " << barrio << " " << nombre << " " << lider << " " << direccion << " " << endl;
+	myfile.close();
+}
+
+void crearFeligres() {
+	string ciudad, localidad, barrio, iglesia, documento, nombre, apellido, tipoID, genero, telCeluar, telFijo, email, fechaNac, ciudadNac, paisNac, direccion, labor;
+	
+	ofstream myfile;
+	myfile.open ("database.txt", ios::app);
+	cin >> ciudad; 
+	cin >> localidad; cin >> barrio;
+	cin>> iglesia; 
+	cin >> documento; 
+	cin >> nombre;
+	cin >>apellido;
+	cin >> tipoID;
+	cin >> genero;
+	cin >> telCeluar;
+	cin >> telFijo;
+	cin >> email;
+	cin >> fechaNac;
+	cin >> ciudadNac;
+	cin >> paisNac;
+	cin >> direccion;
+	cin >> labor;
+	myfile << ciudad << " " << localidad<< " " << barrio << " " << iglesia << " " << documento << " " << nombre << " " << apellido << " " << tipoID << " " << genero << " " << telCeluar << " " << telFijo << " " << email << " " << fechaNac << " " << ciudadNac << paisNac << " " << direccion << " " << labor << " ";
+	
+	string h;
+	cin>> h;
+	while(h != "-1") {
+		myfile << h << " ";
+		cin>>h;
+	}
+	myfile << h <<endl;
+	
+	myfile.close();
+}
+
+void eliminarIglesia() {
+	
 }
 
 int main() {
 	
-	Arbol<ciudad> ciudades;
+	//crearFeligres();
+	
+	/*Arbol<ciudad> ciudades;
 	
 	ciudades = buildIglesias(ciudades);
 	ciudades = buildFeligreses(ciudades);
@@ -261,11 +575,62 @@ int main() {
    		h = pe->datos->hijos.buscar(llave);
    }
    
+   cout<<"---------------------CONSULTA 1---------------------"<<endl<<endl;
+   
    cout<<endl;
    nodo<iglesia>* ig = find_iglesia(ciudades.getRaiz(), "San_nicolas_de_tolentino");
    if(ig!=NULL)cout<<"iglesia: "<<ig->llave<<endl;
    
-   recorrer(ig->datos->personas.getRaiz());
+   cout<<"---------------------CONSULTA 2---------------------"<<endl<<endl;
    
+   cout<<"RECORRER\n";
+   int rango1 = 0, rango2 = 0, rango3 = 0, rango4 = 0;
+   int* rango1Ptr = &rango1; int* rango2Ptr = &rango2; int* rango3Ptr = &rango3; int* rango4Ptr = &rango4;
+   recorrer_1(ig->datos->personas.getRaiz(), rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
+   cout<<"\nrango(0, 5): "<<rango1<<"\nrango(6, 10): "<<rango2<<"\nrango(11, 18): "
+   		<<rango3<<"\nrango(mayor a 18): "<<rango4<<endl;
+   
+   recorrer_ciudades(ciudades.getRaiz(), 0, 2);
+   
+   cout<<"---------------------CONSULTA 3---------------------"<<endl<<endl;
+   
+   recorrer_ciudades_3(ciudades.getRaiz());
+   
+   cout<<"---------------------CONSULTA 4---------------------"<<endl<<endl;
+   
+   int num_ig = 0;
+   int* igPtr = &num_ig;
+   recorrer_ciudades_4(ciudades.getRaiz(), 1, igPtr);
+   cout<<"Numero Iglesias: "<<num_ig<<endl;
+   
+   cout<<"---------------------CONSULTA 5---------------------"<<endl<<endl;
+   	
+    recorrer_ciudades_5(ciudades.getRaiz());
+    
+	cout<<"---------------------CONSULTA 6---------------------"<<endl<<endl;
+	
+	recorrer_ciudades_6(ciudades.getRaiz(), 17, 25, "Ingenieria");*/
+	
+   char selection;
+   do {
+   	cout<<"\n Menu";
+   	cout<<"\n=====================";
+   	cout<<"\n 1. Rango de edades de los hijos";
+   	cout<<"\n 2. Ubicacion";
+   	cout<<"\n 3. Exit";
+   	cout<<"\nopcion: ";
+   	cin>> selection;
+   	
+   	switch(selection){
+   		case '1':
+   			break;
+   		case '2':
+   			break;
+   		case '3':
+   			break;
+	   }
+   	
+   }while(selection!='3');
+   cout<<"salio";
    return 0;
 }

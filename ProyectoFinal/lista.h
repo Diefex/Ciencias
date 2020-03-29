@@ -15,17 +15,19 @@ struct nodo {
 template<class T>
 class Arbol{
 	nodo<T> *raiz;
+	int num_nodos;
 	nodo<T>* insertar(string llave, nodo<T> *h);
 	nodo<T>* insertar(nodo<T>* nuevo, nodo<T> *h);
 	nodo<T>* buscar(string llave, nodo<T> *h);
 	bool eliminar(string llave, nodo<T> *h);
 	public:
-		Arbol(){raiz = NULL;}
+		Arbol(){raiz = NULL; num_nodos = 0;}
 		nodo<T>* insertar(string llave);
 		nodo<T>* insertar(nodo<T>* nuevo);
 		nodo<T>* buscar(string llave);
 		bool eliminar(string llave);
 		nodo<T>* getRaiz();
+		int getNumNodos();
 };
 
 template <class T>
@@ -35,6 +37,7 @@ nodo<T>* Arbol<T>::getRaiz() {
 
 template <class T>
 nodo<T>* Arbol<T>::insertar(string llave){
+	num_nodos++;
 	return insertar(llave, raiz);
 }
 
@@ -83,6 +86,7 @@ nodo<T>* Arbol<T>::insertar(string llave, nodo<T> *h){
 
 template <class T>
 nodo<T>* Arbol<T>::insertar(nodo<T>* nuevo){
+	num_nodos++;
 	return insertar(nuevo, raiz);
 }
 
@@ -132,6 +136,11 @@ nodo<T>* Arbol<T>::buscar(string llave, nodo<T> *h){
 	} else {
 		return buscar(llave, h->der);
 	}
+}
+
+template <class T>
+int Arbol<T>::getNumNodos() {
+	return num_nodos;
 }
 
 #endif
