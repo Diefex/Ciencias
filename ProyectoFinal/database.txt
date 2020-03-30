@@ -27,10 +27,10 @@ Cali La_floresta Loperena Maria_madre_y_reina_de_la_paz 59218944 Otroti Pazo CE 
 Cali La_floresta Loperena Maria_madre_y_reina_de_la_paz 1016046586 Leidy Sarmiento F CC 318-650-3019 543-0983 leidisita56@outlook.com 13/04/1993 Cali Colombia cra_24_N_19-7Sur Salud 1 4 10 -1
 Cali La_floresta Ranchos_del_inat San_jeronimo_de_monteria 51997303 Cualqui Erman M CC 376-083-0983 502-2085 elcualquiera@uncorreo.com 31/12/2000 Cali Colombia cll_54_N_34-56 Ingenieria -1
 Cali La_floresta Ranchos_del_inat San_jeronimo_de_monteria 56330283 Equisper Sona F TI 333-763-9832 592-2357 xper@xcorreo.com 33/11/2004 Cali Colombia cra_34_N_56-98 Artes -1
-Cali La_floresta Ranchos_del_inat San_jeronimo_de_monteria 53212334 Elsinn Ombre M Ce 392-392-5432 543-2678 noname@nocorreo.com 31/12/1992 Toronto Canada cll_33_N_35-65 15 16 -1
-Cali Arboledas El_fical Iglesia_maria_auxiliadora 1010772930 Lasinn Ombre F CE 321-532-5234 502-8743 nonameagain@outofideas.com 13/01/1989 Toronto Canada cll_33_N_35-65 15 16 -1
-Cali Arboledas El_fical Iglesia_maria_auxiliadora 1010983678 Nosekin Ventar M CE 344-542-3436 583-9824 utdkinventa36@outofideas.com 22/12/1988 Helsin Noruega cra_23_N_32-53 10 -1
-Cali Arboledas El_fical Iglesia_maria_auxiliadora 1011889832 Yame Cansedesto F CC 322-543-1576 536-2368 qpereza@gmail.com 22/05/1934 Cali Colombia cra_43_N_22-32Sur 20 21 20 34 35 37 -1
-Cali Arboledas Oltrarno Parroquia_san_miguel_arcangel 52419203 Niseke Masponer M TI 329-346-2356 564-1266 alv9984@outlook.com 16/08/2010 Cali Colombia cll_33_N_33-33 -1
-Cali Arboledas Oltrarno Parroquia_san_miguel_arcangel 59978234 Yaseq Masponer M CC 332-321-4325 564-1266 alvx2@outlook.com 06/06/1976 Cali Colombia cll_33_N_33-33 10 -1
-Cali Arboledas Oltrarno Parroquia_san_miguel_arcangel 56812349 Porf Intermine F CC 332-356-2456 564-1266 alvx3@outlook.com 07/07/1977 Cali Colombia cll_33_N_33-33 10 -1
+Cali La_floresta Ranchos_del_inat San_jeronimo_de_monteria 53212334 Elsinn Ombre M Ce 392-392-5432 543-2678 noname@nocorreo.com 31/12/1992 Toronto Canada cll_33_N_35-65 Artes 15 16 -1
+Cali Arboledas El_fical Iglesia_maria_auxiliadora 1010772930 Lasinn Ombre F CE 321-532-5234 502-8743 nonameagain@outofideas.com 13/01/1989 Toronto Canada cll_33_N_35-65 Artes 15 16 -1
+Cali Arboledas El_fical Iglesia_maria_auxiliadora 1010983678 Nosekin Ventar M CE 344-542-3436 583-9824 utdkinventa36@outofideas.com 22/12/1988 Helsin Noruega cra_23_N_32-53 Salud 10 -1
+Cali Arboledas El_fical Iglesia_maria_auxiliadora 1011889832 Yame Cansedesto F CC 322-543-1576 536-2368 qpereza@gmail.com 22/05/1934 Cali Colombia cra_43_N_22-32Sur Otros 20 21 20 34 35 37 -1
+Cali Arboledas Oltrarno Parroquia_san_miguel_arcangel 52419203 Niseke Masponer M TI 329-346-2356 564-1266 alv9984@outlook.com 16/08/2010 Cali Colombia cll_33_N_33-33 Ciencias_sociales -1
+Cali Arboledas Oltrarno Parroquia_san_miguel_arcangel 59978234 Yaseq Masponer M CC 332-321-4325 564-1266 alvx2@outlook.com 06/06/1976 Cali Colombia cll_33_N_33-33 Ciencias_sociales 10 -1
+Cali Arboledas Oltrarno Parroquia_san_miguel_arcangel 56812349 Porf Intermine F CC 332-356-2456 564-1266 alvx3@outlook.com 07/07/1977 Cali Colombia cll_33_N_33-33 Ciencias_sociales 10 -1
