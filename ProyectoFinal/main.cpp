@@ -701,14 +701,14 @@ void eliminar() {
 
 // Submenú para las consultas de registros, ubicados en los archivos iglesias.txt y database.txt
 void consultas(Arbol<ciudad>* ciudades) {
-	cout<<"\t\t\t\t\tConsultas";
-	cout<<"\n======================================================================================================";
-	cout<<"\n 1. Numero total de personas que asisten a una iglesia, clasifcados por rango de edades de los hijos";
-	cout<<"\n 2. Listado de los nombres y apellidos de aquellos que tienen  un numero de hijos";
+	cout<<"\t\t\t\t\t\tConsultas";
+	cout<<"\n========================================================================================================================";
+	cout<<"\n 1. Numero total de personas que asisten a una iglesia, clasificados por rango de edades de los hijos";
+	cout<<"\n 2. Listado de los nombres y apellidos de aquellos que tienen un numero de hijos dado, clasificado por localidad y labor";
 	cout<<"\n 3. Nombre y apellidos de las personas que viven en una ciudad";
-	cout<<"\n 4. Numero de iglesias a las que asiste un número de personas superior a un numero";
-	cout<<"\n 5. Numero de hombres y el número de mujeres que asisten a las diferentes iglesias";
-	cout<<"\n 6. Lista de feligreses de esa edad";
+	cout<<"\n 4. Numero de iglesias, a las que asiste un numero de personas, superior a un numero dado";
+	cout<<"\n 5. Numero de hombres y numero de mujeres, que asisten a las diferentes iglesias";
+	cout<<"\n 6. Lista de feligreses segun la edad ingresada";
 	cout<<"\n 0. Rregresar al menu principal\n";
 	char op;
 	cin>> op;
