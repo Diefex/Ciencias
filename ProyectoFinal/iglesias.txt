@@ -18,4 +18,5 @@ Pasto Cuajacal Hullaguanga San_nicolas_de_tolentino Samuel_Varela cll_10_09_78
 Riohacha Barbacoas Villa_jardin San_martin_de_porres Luciana_Torres cr_22_17_31
 Neiva La_floresta El_vergel Nuestra_senora_de_manare Ahmned_Coronell cr_56a_51_81
 Tunja Centro_historico Pinos_de_oriente Parroquia_el_senor_de_los_milagros Mario_Portilla cr_8a_07_88
-Bogota Fontibon Recodo Parroquia_Nazaret Alberto_Linero cll_14B_#119-17
+Bogota Fontibon Recodo Parroquia_Nazaret Alberto_Linero cll_14B_#119-17 
+Bogota Kenedy La_Aurora Nuestro_Senor_de_Monserrate Helio cll_14b_119_71

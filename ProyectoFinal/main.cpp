@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Arbol<ciudad> buildIglesias(Arbol<ciudad> ciudades){
+Arbol<ciudad>* buildIglesias(Arbol<ciudad>* ciudades){
 	/* Estructura de iglesias.txt
 	Ciudad
 	Localidad
@@ -22,9 +22,9 @@ Arbol<ciudad> buildIglesias(Arbol<ciudad> ciudades){
 	int l = 0;
 	while(!fe.eof()) {
         fe >> dato;
-        nodo<ciudad>* ciudad = ciudades.buscar(dato);
+        nodo<ciudad>* ciudad = ciudades->buscar(dato);
         if(ciudad == NULL){
-      	  ciudad = ciudades.insertar(dato);
+      	  ciudad = ciudades->insertar(dato);
 	    }
 	    
 	    fe >> dato;
@@ -52,14 +52,12 @@ Arbol<ciudad> buildIglesias(Arbol<ciudad> ciudades){
 		
 		localidad->datos->iglesias.insertar(ig);
 		l++;
-		cout<<"creada la iglesia: "<<ig->llave<<" en la linea "<<l<<endl;
    }
    fe.close();
-   getch();
    return ciudades;
 }
 
-Arbol<ciudad> buildFeligreses(Arbol<ciudad> ciudades){
+Arbol<ciudad>* buildFeligreses(Arbol<ciudad>* ciudades){
 	/* Estructura de database.txt
 	Ciudad
 	Localidad
@@ -83,9 +81,9 @@ Arbol<ciudad> buildFeligreses(Arbol<ciudad> ciudades){
 	string dato;
 	while(!fe.eof()) {
         fe >> dato;
-        nodo<ciudad>* ciudad = ciudades.buscar(dato);
+        nodo<ciudad>* ciudad = ciudades->buscar(dato);
         if(ciudad == NULL){
-      	  	ciudad = ciudades.insertar(dato);
+      	  	ciudad = ciudades->insertar(dato);
 	    }
 	    
 	    fe >> dato;
@@ -106,6 +104,7 @@ Arbol<ciudad> buildFeligreses(Arbol<ciudad> ciudades){
 		if(iglesia == NULL){
 			iglesia = localidad->datos->iglesias.insertar(dato);
 		}
+		
 		fe >> dato;
 		nodo<persona>* p1 = new nodo<persona>;
 		nodo<persona>* p2 = new nodo<persona>;
@@ -199,6 +198,7 @@ Arbol<ciudad> buildFeligreses(Arbol<ciudad> ciudades){
    return ciudades;
 }
 
+// Encuentra el nodo de tipo iglesia recorriendo el árbol binario en preorden, para la lista de iglesias en la structura de localidades, con la llave pasada por parámetro.
 nodo<iglesia>* find_iglesia(nodo<localidad>* raiz, string llave) {
 	if(raiz!=NULL) {		
 		nodo<iglesia>* ig = raiz->datos->iglesias.buscar(llave);
@@ -210,6 +210,7 @@ nodo<iglesia>* find_iglesia(nodo<localidad>* raiz, string llave) {
 	return NULL;
 }
 
+// Encuentra el nodo de tipo iglesia recorriendo el árbol binario en preorden, con el llamdo de la función find_iglesia de la parte superior;
 nodo<iglesia>* find_iglesia(nodo<ciudad>* raiz, string llave) {
 	if(raiz!=NULL) {
 		nodo<localidad>* loc = raiz->datos->localidades.getRaiz();
@@ -224,9 +225,13 @@ nodo<iglesia>* find_iglesia(nodo<ciudad>* raiz, string llave) {
 	return NULL;
 }
 
-void recorrer_1(nodo<persona>* raiz, int* rango1Ptr, int* rango2Ptr, int* rango3Ptr, int* rango4Ptr) {
+// Recorre el árbol binario en preorden, para la lista de hijos de la estructura persona, para contabilizar el número de feligreses por rangos de edades de los hijos.
+void recorrer_1(nodo<persona>* raiz, int* rango1Ptr, int* rango2Ptr, int* rango3Ptr, int* rango4Ptr, int* rango0Ptr) {
 	if(raiz!=NULL) {
 		nodo<hijo>* h = raiz->datos->hijos.buscar("0");
+		if(h == NULL) {
+			*rango0Ptr+=1;
+		}
 		int i = 0;
 		bool r_1=false, r_2=false, r_3=false, r_4=false;
 		while(h!=NULL) {
@@ -241,11 +246,12 @@ void recorrer_1(nodo<persona>* raiz, int* rango1Ptr, int* rango2Ptr, int* rango3
 	   		ss>>llave;
 	   		h = raiz->datos->hijos.buscar(llave);
 		}
-		recorrer_1(raiz->izq, rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
-		recorrer_1(raiz->der, rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
+		recorrer_1(raiz->izq, rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr, rango0Ptr);
+		recorrer_1(raiz->der, rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr, rango0Ptr);
 	}
 }
 
+// Recorre el árbol binario en preorden, para la lista de hijos de la estructura persona, para contabilizar el número de feligreses con un número de hijos determindo por el usuario.
 void recorrer_personas(nodo<persona>* raiz, int cota_inferior, int cota_superior) {
 	if(raiz!=NULL) {
 		if(raiz->datos->hijos.getNumNodos() >= cota_inferior && raiz->datos->hijos.getNumNodos() <= cota_superior){
@@ -256,6 +262,7 @@ void recorrer_personas(nodo<persona>* raiz, int cota_inferior, int cota_superior
 	}
 }
 
+// Recorre el árbol binario en preorden, para la lista de personas de la estructura barrio.
 void recorrer_barrios(nodo<barrio>* raiz, int cota_inferior, int cota_superior) {
 	if(raiz!=NULL) {
 		recorrer_personas(raiz->datos->personas.getRaiz(), cota_inferior, cota_superior);
@@ -264,6 +271,7 @@ void recorrer_barrios(nodo<barrio>* raiz, int cota_inferior, int cota_superior) 
 	}
 }
 
+// Recorre el árbol binario en preorden, para la lista de barrios de la estructura localidades.
 void recorrer_localidades(nodo<localidad>* raiz, int cota_inferior, int cota_superior) {
 	if(raiz!=NULL) {
 		cout<<"\t LOCALIDAD: "<<raiz->llave<<endl;
@@ -273,6 +281,7 @@ void recorrer_localidades(nodo<localidad>* raiz, int cota_inferior, int cota_sup
 	}
 }
 
+// Recorre el árbol binario en preorden, para la lista de localidades de la estructura ciduad.
 void recorrer_ciudades(nodo<ciudad>* raiz, int cota_inferior, int cota_superior) {
 	if(raiz!=NULL) {
 		cout<<"CIUDAD: "<<raiz->llave<<endl;
@@ -282,6 +291,10 @@ void recorrer_ciudades(nodo<ciudad>* raiz, int cota_inferior, int cota_superior)
 	}
 }
 
+/* 
+	Recorre el árbol binario en preorden, de la estructura persona para almacenar en una cola, 
+	los feligreses con una actividda laboral determinasa por el usuario.
+*/
 void recorrer_personas_3(nodo<persona>* raiz, cola<nodo<persona>*>* artes, cola<nodo<persona>*>* ciencias_soc, cola<nodo<persona>*>* ingenierias, cola<nodo<persona>*>* salud, cola<nodo<persona>*>* otros) {
 	
 	if(raiz!=NULL) {
@@ -301,6 +314,7 @@ void recorrer_personas_3(nodo<persona>* raiz, cola<nodo<persona>*>* artes, cola<
 	}
 }
 
+// Recorre el árbol binario en preorden, para la lista de personas de la estructura barrio.
 void recorrer_barrios_3(nodo<barrio>* raiz, cola<nodo<persona>*>* artes, cola<nodo<persona>*>* ciencias_soc, cola<nodo<persona>*>* igenierias, cola<nodo<persona>*>* salud, cola<nodo<persona>*>* otros) {
 	if(raiz!=NULL) {
 		recorrer_personas_3(raiz->datos->personas.getRaiz(), artes, ciencias_soc, igenierias, salud, otros);
@@ -309,6 +323,7 @@ void recorrer_barrios_3(nodo<barrio>* raiz, cola<nodo<persona>*>* artes, cola<no
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_localidades_3(nodo<localidad>* raiz) {
 	if(raiz!=NULL) {
 		cola<nodo<persona>*>* artes = new cola<nodo<persona>*>; 
@@ -350,6 +365,7 @@ void recorrer_localidades_3(nodo<localidad>* raiz) {
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_ciudades_3(nodo<ciudad>* raiz) {
 	if(raiz!=NULL) {
 		recorrer_localidades_3(raiz->datos->localidades.getRaiz());
@@ -358,6 +374,7 @@ void recorrer_ciudades_3(nodo<ciudad>* raiz) {
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_iglesias(nodo<iglesia>* raiz, int num, cola<nodo<iglesia>*>* ig) {
 	if(raiz!=NULL) {
 		if(raiz->datos->personas.getNumNodos() > num) {
@@ -368,6 +385,7 @@ void recorrer_iglesias(nodo<iglesia>* raiz, int num, cola<nodo<iglesia>*>* ig) {
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_localidades_4(nodo<localidad>* raiz, int num, int* contPtr) {
 	cola< nodo<iglesia>* >* ig = new cola< nodo<iglesia>* >;
 	if(raiz!=NULL) {
@@ -383,6 +401,7 @@ void recorrer_localidades_4(nodo<localidad>* raiz, int num, int* contPtr) {
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_ciudades_4(nodo<ciudad>* raiz, int num, int* contPtr) {
 	if(raiz!=NULL) {
 		recorrer_localidades_4(raiz->datos->localidades.getRaiz(), num, contPtr);
@@ -391,6 +410,7 @@ void recorrer_ciudades_4(nodo<ciudad>* raiz, int num, int* contPtr) {
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_personas_5(nodo<persona>* raiz, int* hPtr, int* mPtr) {
 	if(raiz!=NULL) {
 		if(raiz->datos->genero == "M") {
@@ -403,12 +423,13 @@ void recorrer_personas_5(nodo<persona>* raiz, int* hPtr, int* mPtr) {
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_iglesias_5(nodo<iglesia>* raiz) {
 	if(raiz!=NULL) {
 		int h, m = 0;
 		int* hPtr = &h; int* mPtr = &m;
 		recorrer_personas_5(raiz->datos->personas.getRaiz(), hPtr, mPtr);
-		cout<<"\t\tIGLESIA: "<<raiz->llave<<endl;
+		cout<<"\t\tIGLESIA: "<<raiz->llave<< "  Lider: " << raiz->datos->lider <<endl;
 		cout<<"\t\t\tHombres: "<<*hPtr<<endl;
 		cout<<"\t\t\tMujeres: "<<*mPtr<<endl;
 		recorrer_iglesias_5(raiz->izq);
@@ -416,6 +437,7 @@ void recorrer_iglesias_5(nodo<iglesia>* raiz) {
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_localidades_5(nodo<localidad>* raiz) {
 	if(raiz!=NULL) {
 		cout<<"\tLOCALIDAD: "<<raiz->llave<<endl;
@@ -425,6 +447,7 @@ void recorrer_localidades_5(nodo<localidad>* raiz) {
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_ciudades_5(nodo<ciudad>* raiz) {
 	if(raiz!=NULL) {
 		cout<<"CIUDAD: "<<raiz->llave<<endl;
@@ -434,6 +457,7 @@ void recorrer_ciudades_5(nodo<ciudad>* raiz) {
 	}
 }
 
+// Calcula la edad de los feligreses a partir del año de su nacimiento hasta el año 2020.
 int calcular_edad(string fecha) {
 	string a;	
 	for(int i=6;i<=fecha.length();i++) {
@@ -447,6 +471,7 @@ int calcular_edad(string fecha) {
 	return x;
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_personas_6(nodo<persona>* raiz, int cota_i, int cota_s, string actividad) {
 	if(raiz!=NULL) {
 		int edad = calcular_edad(raiz->datos->fechaNac);
@@ -458,6 +483,7 @@ void recorrer_personas_6(nodo<persona>* raiz, int cota_i, int cota_s, string act
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_iglesias_6(nodo<iglesia>* raiz, int cota_i, int cota_s, string actividad) {
 	if(raiz!=NULL) {
 		cout<<"\tIGLESIA: "<<raiz->llave<<endl;
@@ -468,6 +494,7 @@ void recorrer_iglesias_6(nodo<iglesia>* raiz, int cota_i, int cota_s, string act
 	cout<<endl;
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_barrios_6(nodo<barrio>* raiz, int cota_i, int cota_s, string actividad) {
 	if(raiz!=NULL){
 		cout<<"\tBARRIO: "<<raiz->llave<<endl;
@@ -487,6 +514,7 @@ void recorrer_localidades_6(nodo<localidad>* raiz, int cota_i, int cota_s, strin
 	}
 }
 
+// Recorre el árbol binario en preorden,
 void recorrer_ciudades_6(nodo<ciudad>* raiz, int cota_i, int cota_s, string actividad) {
 	if(raiz!=NULL) {
 		recorrer_localidades_6(raiz->datos->localidades.getRaiz(), cota_i, cota_s, actividad);
@@ -495,62 +523,147 @@ void recorrer_ciudades_6(nodo<ciudad>* raiz, int cota_i, int cota_s, string acti
 	}
 }
 
-void crearIglesia(string ciudad, string localidad, string barrio, string nombre, string lider, string direccion) {
+// Escribe en el archivo iglesias.txt el registro de una iglesia con los datos ingresados por el usuario.
+void crearIglesia() {
+	string ciudad, localidad, barrio, nombre, lider, direccion;
+	
 	ofstream myfile;
 	myfile.open ("iglesias.txt", ios::app);
-	//myfile << "Bogota Fontibon Recodo Parroquia_Nazaret Alberto_Linero cll_14B_#119-17" <<endl;
-	myfile << ciudad << " " << localidad << " " << barrio << " " << nombre << " " << lider << " " << direccion << " " << endl;
+	
+	cout << "Ingrese la ciudad donde esta ubicada la iglesia: ";
+	cin >> ciudad;
+	cout << "Ingrese la localidad donde esta ubicada la iglesia: ";
+	cin >> localidad;
+	cout << "Ingrese el barrrio donde esta ubicada la iglesia: ";
+	cin >> barrio;
+	cout << "Ingrese el nombre de la iglesia: ";
+	cin >> nombre;
+	cout << "Ingrese el nombre del lider la iglesia: ";
+	cin >> lider;
+	cout << "Ingrese la direccion de la iglesia: ";
+	cin >> direccion;
+	
+	myfile << endl << ciudad << " " << localidad << " " << barrio << " " << nombre << " " << lider << " " << direccion << " ";
+	cout << "La iglesia ha sido creada.";
+	
 	myfile.close();
 }
 
+// Escribe en el archivo database.txt el registro de un feligres con los datos ingresados por el usuario.
 void crearFeligres() {
 	string ciudad, localidad, barrio, iglesia, documento, nombre, apellido, tipoID, genero, telCeluar, telFijo, email, fechaNac, ciudadNac, paisNac, direccion, labor;
 	
 	ofstream myfile;
 	myfile.open ("database.txt", ios::app);
-	cin >> ciudad; 
-	cin >> localidad; cin >> barrio;
-	cin>> iglesia; 
-	cin >> documento; 
-	cin >> nombre;
-	cin >>apellido;
-	cin >> tipoID;
-	cin >> genero;
-	cin >> telCeluar;
-	cin >> telFijo;
-	cin >> email;
-	cin >> fechaNac;
-	cin >> ciudadNac;
-	cin >> paisNac;
-	cin >> direccion;
-	cin >> labor;
-	myfile << ciudad << " " << localidad<< " " << barrio << " " << iglesia << " " << documento << " " << nombre << " " << apellido << " " << tipoID << " " << genero << " " << telCeluar << " " << telFijo << " " << email << " " << fechaNac << " " << ciudadNac << paisNac << " " << direccion << " " << labor << " ";
 	
+	cout << "Ingrese la ciudad donde reside el feligres: ";
+	cin >> ciudad; 
+	cout << "Ingrese la localidad donde reside el feligres: ";
+	cin >> localidad; 
+	cout << "Ingrese el barrio donde reside el feligres: ";
+	cin >> barrio;
+	cout << "Ingrese el nombre de la iglesia a donde asiste el feligres: ";
+	cin>> iglesia; 
+	cout << "Ingrese el numero de documento del feligres: ";
+	cin >> documento; 
+	cout << "Ingrese el nombre del feligres: ";
+	cin >> nombre;
+	cout << "Ingrese el apellido del feligres: ";
+	cin >>apellido;
+	cout << "Ingrese el tipo de identificacion del feligres: ";
+	cin >> tipoID;
+	cout << "Ingrese el genero del feligres (M o F): ";
+	
+	cout<< "\n\t1. Masculino";
+	cout<< "\n\t2. Femenino\n";
+	char op;
+	cin>>op;
+	switch(op) {
+		case '1':
+			genero = "M";
+			break;
+		case '2':
+			genero = "F";
+			break;
+		default:
+			genero = "M";
+	}
+	
+	cout << "Ingrese el numero de telefono celular del feligres: ";
+	cin >> telCeluar;
+	cout << "Ingrese el numero del telfonon fijo del feligres: ";
+	cin >> telFijo;
+	cout << "Ingrese el E-mail del feligres: ";
+	cin >> email;
+	cout << "Ingrese la fecha de nacimiento del feligres: ";
+	cin >> fechaNac;
+	cout << "Ingrese la ciudad de nacimiento del feligres: ";
+	cin >> ciudadNac;
+	cout << "Ingrese el pais de nacimiento del feligres: ";
+	cin >> paisNac;
+	cout << "Ingrese la direccion de residencia del feligres: ";
+	cin >> direccion;
+	cout << "Ingrese la actividad laboral del feligres: ";
+	
+	cout<< "\n\t1. Artes";
+	cout<< "\n\t2. Ingeneria";
+	cout<< "\n\t3. Ciencias Sociales";
+	cout<< "\n\t4. Salud";
+	cout<< "\n\t5. Otros\n";
+	
+	cin>>op;
+	switch(op) {
+		case '1':
+			labor = "Artes";
+			break;
+		case '2':
+			labor = "Ingenieria";
+			break;
+		case '3':
+			labor = "Ciencias_sociales";
+			break;
+		case '4':
+			labor = "Salud";
+			break;
+		default:
+			labor = "Ingenieria";
+	}
+	
+	myfile << endl << ciudad << " " << localidad<< " " << barrio << " " << iglesia << " " << documento << " " << nombre << " " << apellido << " " << tipoID << " " << genero << " " << telCeluar << " " << telFijo << " " << email << " " << fechaNac << " " << ciudadNac << paisNac << " " << direccion << " " << labor << " ";
+	
+	cout<<"Ingrese la edad de los hijos del feligres (ingrese -1 para terminar)\n";
 	string h;
+	int i = 0;
+	cout << "\tIngrese la edad del hijo numero " << i+1 <<": ";
 	cin>> h;
 	while(h != "-1") {
+		i++;
 		myfile << h << " ";
+		cout << "\tIngrese la edad del hijo numero " << i+1 <<": ";
 		cin>>h;
 	}
-	myfile << h <<endl;
+	myfile << h;
+	cout << "El feligres ha sido creado.";
 	
 	myfile.close();
 }
 
+// Elimina un registro del archivo iglesias.txt
 void eliminarIglesia() {
 	
 }
 
-void consultas(Arbol<ciudad> ciudades){
-	cout<<"\n Consultas";
-	cout<<"\n=====================";
-	cout<<"\n 1. Número total de personas que asisten a una iglesia";
-	cout<<"\n 2. Listado de los nombres y apellidos de aquellos que tienen  un número de hijos";
+// Submenú para las consultas de registros, ubicados en los archivos iglesias.txt y database.txt
+void consultas(Arbol<ciudad>* ciudades) {
+	cout<<"\t\t\t\t\tConsultas";
+	cout<<"\n======================================================================================================";
+	cout<<"\n 1. Numero total de personas que asisten a una iglesia, clasifcados por rango de edades de los hijos";
+	cout<<"\n 2. Listado de los nombres y apellidos de aquellos que tienen  un numero de hijos";
 	cout<<"\n 3. Nombre y apellidos de las personas que viven en una ciudad";
-	cout<<"\n 4. Número de iglesias a las que asiste un número de personas superior a un número";
-	cout<<"\n 5. Número de hombres y el número de mujeres que asisten a las diferentes iglesias";
+	cout<<"\n 4. Numero de iglesias a las que asiste un número de personas superior a un numero";
+	cout<<"\n 5. Numero de hombres y el número de mujeres que asisten a las diferentes iglesias";
 	cout<<"\n 6. Lista de feligreses de esa edad";
-	cout<<"\n 0. Salir\n";
+	cout<<"\n 0. Rregresar al menu principal\n";
 	char op;
 	cin>> op;
 	system("cls");
@@ -559,11 +672,15 @@ void consultas(Arbol<ciudad> ciudades){
 			string nIglesia;
 			cout<<"Ingrese el nombre de la Iglesia: ";
 			cin>>nIglesia;
-			nodo<iglesia>* ig = find_iglesia(ciudades.getRaiz(), nIglesia);
-			int rango1 = 0, rango2 = 0, rango3 = 0, rango4 = 0;
-   			int* rango1Ptr = &rango1; int* rango2Ptr = &rango2; int* rango3Ptr = &rango3; int* rango4Ptr = &rango4;
-		   	recorrer_1(ig->datos->personas.getRaiz(), rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
-		   	cout<<"\nrango(0, 5): "<<rango1<<" personas. \nrango(6, 10): "<<rango2<<" personas. \nrango(11, 18): "<<rango3<<" personas. \nrango(mayor a 18): "<<rango4<<" personas."<<endl;
+			nodo<iglesia>* ig = find_iglesia(ciudades->getRaiz(), nIglesia);
+			if(ig!=NULL){
+				int rango1 = 0, rango2 = 0, rango3 = 0, rango4 = 0, rango0 = 0;
+   			int* rango1Ptr = &rango1; int* rango2Ptr = &rango2; int* rango3Ptr = &rango3; int* rango4Ptr = &rango4; int* rango0Ptr = &rango0;
+		   	recorrer_1(ig->datos->personas.getRaiz(), rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr, rango0Ptr);
+		   	cout<< "\nrango(sin hijos): " <<rango0 <<"\nrango(0, 5): "<<rango1<<" personas. \nrango(6, 10): "<<rango2<<" personas. \nrango(11, 18): "<<rango3<<" personas. \nrango(mayor a 18): "<<rango4<<" personas."<<endl;
+			}else {
+				cout << "La iglesia ingresada no ha sido encontrada en la base de datos.";
+			}
 		   	getch();
 			break;
 		}
@@ -574,7 +691,7 @@ void consultas(Arbol<ciudad> ciudades){
 			cin>>inf;
 			cout<<"\nhasta: ";
 			cin>>sup;
-			recorrer_ciudades(ciudades.getRaiz(), inf, sup);
+			recorrer_ciudades(ciudades->getRaiz(), inf, sup);
 			getch();
 			break;
 		}
@@ -582,7 +699,7 @@ void consultas(Arbol<ciudad> ciudades){
 			cout<<"Ingrese una ciudad: ";
 			string nCiudad;
 			cin>>nCiudad;
-			nodo<ciudad>* c = ciudades.buscar(nCiudad);
+			nodo<ciudad>* c = ciudades->buscar(nCiudad);
 			recorrer_localidades_3(c->datos->localidades.getRaiz());
 			getch();
 			break;
@@ -593,13 +710,14 @@ void consultas(Arbol<ciudad> ciudades){
 			cin>>num;
 			int num_ig = 0;
 		   	int* igPtr = &num_ig;
-		   	recorrer_ciudades_4(ciudades.getRaiz(), num, igPtr);
+		   	recorrer_ciudades_4(ciudades->getRaiz(), num, igPtr);
 		   	cout<<"\n Numero Iglesias: "<<num_ig<<endl;
 		   	getch();
 			break;
 		}
 		case '5':{
-			recorrer_ciudades_5(ciudades.getRaiz());
+			recorrer_ciudades_5(ciudades->getRaiz());
+			getch();
 			break;
 		}
 		case '6':{
@@ -625,117 +743,73 @@ void consultas(Arbol<ciudad> ciudades){
 			cin>>inf;
 			cout<<"hasta: ";
 			cin>>sup;
-			recorrer_ciudades_6(ciudades.getRaiz(), inf, sup, labor);
+			recorrer_ciudades_6(ciudades->getRaiz(), inf, sup, labor);
 			getch();
 			break;
 		}
 	}
 }
 
-void ingresar(){
-	cout<<"1. Ingresar Iglesia\n";
-	cout<<"2. Ingresar Feligres\n";
+// Submenú para el ingreso de registros, en los archivos de iglesias.txt y database.txt
+void ingresar(Arbol<ciudad>* ciudades) {
+	cout<<"\tIngresos a la base de datos";
+	cout<<"\n=======================================";
+	cout<<"\n1. Ingresar Iglesia";
+	cout<<"\n2. Ingresar Feligres";
+	cout<<"\n0. Regresar al menu princial\n";
+	
 	char op;
 	cin>>op;
+	system("cls");
 	switch(op){
 		case '1':
+			crearIglesia();
+			cout<<"¡Los cambios no surguiran efecto hasta que el programa sea reiniciado!";
+			getch();
 			break;
-			
 		case '2':
+			crearFeligres();
+			cout<<"¡Los cambios no surguiran efecto hasta que el programa sea reiniciado!";
+			getch();
 			break;
+		case '0':
+			break;
+		default:
+			cout << "¡Opcion invalida!";
 	}
 }
 
 int main() {
 	
-	//crearFeligres();
-	
-	Arbol<ciudad> ciudades;
-	
+	Arbol<ciudad>* ciudades = new Arbol<ciudad>;
 	ciudades = buildIglesias(ciudades);
 	ciudades = buildFeligreses(ciudades);
-   /*
-   nodo<ciudad>* c = ciudades.buscar("Bogota");
-   cout<<c->llave<<endl;
-   nodo<localidad>* l = c->datos->localidades.buscar("Bosa");
-   cout<<l->llave<<endl;
-   nodo<barrio>* b = l->datos->barrios.buscar("Recreo");
-   cout<<b->llave<<endl;
-   nodo<iglesia>* i = l->datos->iglesias.buscar("San_Pepe");
-   cout<<i->llave<<endl;
-   nodo<persona>* pe = b->datos->personas.buscar("1010052766");
-   cout<<pe->llave<<endl;
-   cout<<pe->datos->nombre<<endl;
-   
-   nodo<hijo>* h = pe->datos->hijos.buscar("0");
-   int j = 0;
-   cout<<"hijos: ";
-   while(h != NULL) {
-   		cout<< h->datos->edad<<",";
-   		j++;
-   		stringstream ss;
-   		ss<<j;
-   		string llave;
-   		ss>>llave;
-   		h = pe->datos->hijos.buscar(llave);
-   }
-   
-   cout<<"---------------------CONSULTA 1---------------------"<<endl<<endl;
-   
-   cout<<endl;
-   nodo<iglesia>* ig = find_iglesia(ciudades.getRaiz(), "San_nicolas_de_tolentino");
-   if(ig!=NULL)cout<<"iglesia: "<<ig->llave<<endl;
-   
-   
-   cout<<"RECORRER\n";
-   int rango1 = 0, rango2 = 0, rango3 = 0, rango4 = 0;
-   int* rango1Ptr = &rango1; int* rango2Ptr = &rango2; int* rango3Ptr = &rango3; int* rango4Ptr = &rango4;
-   recorrer_1(ig->datos->personas.getRaiz(), rango1Ptr, rango2Ptr, rango3Ptr, rango4Ptr);
-   cout<<"\nrango(0, 5): "<<rango1<<"\nrango(6, 10): "<<rango2<<"\nrango(11, 18): "
-   		<<rango3<<"\nrango(mayor a 18): "<<rango4<<endl;
-   		
-   cout<<"---------------------CONSULTA 2---------------------"<<endl<<endl;
-   recorrer_ciudades(ciudades.getRaiz(), 0, 2);
-   
-   cout<<"---------------------CONSULTA 3---------------------"<<endl<<endl;
-   
-   recorrer_ciudades_3(ciudades.getRaiz());
-   
-   cout<<"---------------------CONSULTA 4---------------------"<<endl<<endl;
-   
-   int num_ig = 0;
-   int* igPtr = &num_ig;
-   recorrer_ciudades_4(ciudades.getRaiz(), 1, igPtr);
-   cout<<"Numero Iglesias: "<<num_ig<<endl;
-   
-   cout<<"---------------------CONSULTA 5---------------------"<<endl<<endl;
-   	
-    recorrer_ciudades_5(ciudades.getRaiz());
-    
-	cout<<"---------------------CONSULTA 6---------------------"<<endl<<endl;
-	
-	recorrer_ciudades_6(ciudades.getRaiz(), 17, 25, "Ingenieria");*/
 	
    char selection;
    do {
-   	system("CLS");
-   	cout<<"\n Menu";
-   	cout<<"\n=====================";
+   	system("cls");
+   	cout<<"\tBASE DE DATOS";
+   	cout<<"\n=====================================";
    	cout<<"\n 1. Consultar";
    	cout<<"\n 2. Ingresar";
    	cout<<"\n 3. Eliminar";
    	cout<<"\n 0. Salir\n";
    	cin>> selection;
-   	system("CLS");
+   	system("cls");
    	switch(selection){
    		case '1':
    			consultas(ciudades);
    			break;
    		case '2':
-	   		break;		
+   			ingresar(ciudades);
+	   		break;
+	   	case '0':
+	   		cout << "Gracias Profe Deicy, ESTE PROGRAMA ESTA PARA UN 5!!!";
+	   		break;
+		default:
+			cout << "¡Opcion invalida!";
 	   }
    	
    }while(selection!='0');
-   cout<<"salio";
    return 0;
 }
