@@ -1,5 +1,5 @@
-#ifndef LISTA_H
-#define LISTA_H
+#ifndef ARBOLB_H
+#define ARBOLB_H
 
 #include <iostream>
 
@@ -12,6 +12,7 @@ struct nodo {
 	nodo<T> *izq, *der;
 };
 
+// Clase Arbol.
 template<class T>
 class Arbol{
 	nodo<T> *raiz;
@@ -30,17 +31,25 @@ class Arbol{
 		int getNumNodos();
 };
 
+// Retorna la raíz de la clase Arbol.
 template <class T>
 nodo<T>* Arbol<T>::getRaiz() {
 	return raiz;
 }
 
+/* 
+	Hay dos 4 método de insertar 2 pequeños y 2 grandes, los pequeños llaman con la raíz a los nodos grandes, 
+	para insertar nodos nuevos y nodos previamente creados.	
+*/
+
+// Llama al método insertar con la la raíz del árbol.
 template <class T>
 nodo<T>* Arbol<T>::insertar(string llave){
 	num_nodos++;
 	return insertar(llave, raiz);
 }
 
+// Crea un nodo y lo inserta en el árbol;
 template<class T>
 nodo<T>* Arbol<T>::insertar(string llave, nodo<T> *h){
 	if(raiz == NULL){
@@ -84,12 +93,14 @@ nodo<T>* Arbol<T>::insertar(string llave, nodo<T> *h){
 	}
 }
 
+// Recibe y llama al método insertar pasando el nodo nuevo y la raíz del árbol.
 template <class T>
 nodo<T>* Arbol<T>::insertar(nodo<T>* nuevo){
 	num_nodos++;
 	return insertar(nuevo, raiz);
 }
 
+// Recibe un nodo y lo inserta.
 template<class T>
 nodo<T>* Arbol<T>::insertar(nodo<T>* nuevo, nodo<T> *h){
 	if(raiz==NULL){
@@ -118,11 +129,13 @@ nodo<T>* Arbol<T>::insertar(nodo<T>* nuevo, nodo<T> *h){
 	
 }
 
+// Llama al método buscar pasándole la llave.
 template <class T>
 nodo<T>* Arbol<T>::buscar(string llave){
 	return buscar(llave, raiz);
 }
 
+// Busca un nodo del árbol con la llave desde un nodo dado.
 template <class T>
 nodo<T>* Arbol<T>::buscar(string llave, nodo<T> *h){
 	if(h == NULL){
@@ -138,6 +151,7 @@ nodo<T>* Arbol<T>::buscar(string llave, nodo<T> *h){
 	}
 }
 
+// Retorno el número de nodos del árbol;
 template <class T>
 int Arbol<T>::getNumNodos() {
 	return num_nodos;
