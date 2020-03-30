@@ -1,7 +1,7 @@
 #ifndef ESTRUCTURAS_H
 #define ESTRUCTURAS_H
 
-#include "lista.h"
+#include "arbolB.h"
 
 struct hijo{
 	int edad;

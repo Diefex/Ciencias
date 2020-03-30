@@ -3,11 +3,12 @@
 #include <sstream>
 #include <conio.h>
 #include "estructuras.h"
-#include "lista.h"
+#include "arbolB.h"
 #include "cola.h"
 
 using namespace std;
 
+// Crea las estructuras de iglesia con los datos almacenados en el archivo iglesias.txt
 Arbol<ciudad>* buildIglesias(Arbol<ciudad>* ciudades){
 	/* Estructura de iglesias.txt
 	Ciudad
@@ -39,7 +40,6 @@ Arbol<ciudad>* buildIglesias(Arbol<ciudad>* ciudades){
 	  		barrio = localidad->datos->barrios.insertar(dato);
 		}
 		
-		  
 		fe >> dato;
 		nodo<iglesia>* ig = new nodo<iglesia>;
 		ig->llave = dato;
@@ -57,6 +57,7 @@ Arbol<ciudad>* buildIglesias(Arbol<ciudad>* ciudades){
    return ciudades;
 }
 
+// Crea las estructuras de persona con los datos almacenados en el archivo database.txt
 Arbol<ciudad>* buildFeligreses(Arbol<ciudad>* ciudades){
 	/* Estructura de database.txt
 	Ciudad
@@ -262,7 +263,7 @@ void recorrer_personas(nodo<persona>* raiz, int cota_inferior, int cota_superior
 	}
 }
 
-// Recorre el árbol binario en preorden, para la lista de personas de la estructura barrio.
+// Recorre el árbol binario en preorden, para la lista personas de la estructura barrio.
 void recorrer_barrios(nodo<barrio>* raiz, int cota_inferior, int cota_superior) {
 	if(raiz!=NULL) {
 		recorrer_personas(raiz->datos->personas.getRaiz(), cota_inferior, cota_superior);
@@ -271,7 +272,7 @@ void recorrer_barrios(nodo<barrio>* raiz, int cota_inferior, int cota_superior) 
 	}
 }
 
-// Recorre el árbol binario en preorden, para la lista de barrios de la estructura localidades.
+// Recorre el árbol binario en preorden, para la lista barrios de la estructura localidades.
 void recorrer_localidades(nodo<localidad>* raiz, int cota_inferior, int cota_superior) {
 	if(raiz!=NULL) {
 		cout<<"\t LOCALIDAD: "<<raiz->llave<<endl;
@@ -281,7 +282,7 @@ void recorrer_localidades(nodo<localidad>* raiz, int cota_inferior, int cota_sup
 	}
 }
 
-// Recorre el árbol binario en preorden, para la lista de localidades de la estructura ciduad.
+// Recorre el árbol binario en preorden, para la lista localidades de la estructura ciduad.
 void recorrer_ciudades(nodo<ciudad>* raiz, int cota_inferior, int cota_superior) {
 	if(raiz!=NULL) {
 		cout<<"CIUDAD: "<<raiz->llave<<endl;
@@ -323,7 +324,10 @@ void recorrer_barrios_3(nodo<barrio>* raiz, cola<nodo<persona>*>* artes, cola<no
 	}
 }
 
-// Recorre el árbol binario en preorden,
+/* 
+	Recorre el árbol binario en preorden, para la lista de barrios de la estructura localidad;
+	además, se crean apuntadores a colas para almacenar los feligreses en grupos de acuerdo a su actividad laboral.
+*/
 void recorrer_localidades_3(nodo<localidad>* raiz) {
 	if(raiz!=NULL) {
 		cola<nodo<persona>*>* artes = new cola<nodo<persona>*>; 
@@ -365,7 +369,7 @@ void recorrer_localidades_3(nodo<localidad>* raiz) {
 	}
 }
 
-// Recorre el árbol binario en preorden,
+// Recorre el árbol binario en preorden, para la lista localidades de la estructura ciudad.
 void recorrer_ciudades_3(nodo<ciudad>* raiz) {
 	if(raiz!=NULL) {
 		recorrer_localidades_3(raiz->datos->localidades.getRaiz());
@@ -374,34 +378,45 @@ void recorrer_ciudades_3(nodo<ciudad>* raiz) {
 	}
 }
 
-// Recorre el árbol binario en preorden,
-void recorrer_iglesias(nodo<iglesia>* raiz, int num, cola<nodo<iglesia>*>* ig) {
+/* 
+	Recorre el árbol binario en preorden, de la structura iglesia para determinar cuales de la iglesias,
+ 	tiene un número de feligreses mayor a un número dado por el usuario;
+*/
+void recorrer_iglesias(nodo<iglesia>* raiz, int num, int* contPtr/*cola<nodo<iglesia>*>* ig*/) {
 	if(raiz!=NULL) {
 		if(raiz->datos->personas.getNumNodos() > num) {
-			ig->InsCola(raiz);
+			//ig->InsCola(raiz);
+			*contPtr+=1;
+			cout<<"\tIGLESIA: "<<raiz->llave<<endl;
+			cout<<"\t\tNumero de personas: "<<raiz->datos->personas.getNumNodos()<<" \n\tNombre del sacerdote: "<<raiz->datos->lider<<" \n\tLocalidad: " <<endl;
 		}
-		recorrer_iglesias(raiz->izq, num, ig);
-		recorrer_iglesias(raiz->der, num, ig);
+		recorrer_iglesias(raiz->izq, num, contPtr/*ig*/);
+		recorrer_iglesias(raiz->der, num, contPtr/*ig*/);
 	}
 }
 
-// Recorre el árbol binario en preorden,
+/* 
+	Recorre el árbol binario en preorden, para la lista de iglesias de la estructura localidad, 
+	pasando como parámetro un apuntador de entero que almacena el número de iglesias totales, 
+	que cumplen con la condición. 
+*/
 void recorrer_localidades_4(nodo<localidad>* raiz, int num, int* contPtr) {
-	cola< nodo<iglesia>* >* ig = new cola< nodo<iglesia>* >;
+	cola<nodo<iglesia>*>* ig = new cola<nodo<iglesia>*>;
 	if(raiz!=NULL) {
-		recorrer_iglesias(raiz->datos->iglesias.getRaiz(), num, ig);
-		*contPtr+=ig->getTam();
+		cout<<"LOCALIDAD: " <<raiz->llave <<endl;
+		recorrer_iglesias(raiz->datos->iglesias.getRaiz(), num, contPtr/*ig*/);
+		/*contPtr+=ig->getTam();
 		while(!ig->ColaVacia()) {
 			nodo<iglesia>* aux = ig->AtenderCola();
 			cout<<"IGLESIA: "<<aux->llave<<endl;
 			cout<<"\tNumero de personas: "<<aux->datos->personas.getNumNodos()<<" \n\tNombre del sacerdote: "<<aux->datos->lider<<" \n\tLocalidad: "<<raiz->llave<<endl;
-		}
+		}*/
 		recorrer_localidades_4(raiz->izq, num, contPtr);
 		recorrer_localidades_4(raiz->der, num, contPtr);
 	}
 }
 
-// Recorre el árbol binario en preorden,
+// Recorre el árbol binario en preorden, para la lista localidades de la estructura ciudad.
 void recorrer_ciudades_4(nodo<ciudad>* raiz, int num, int* contPtr) {
 	if(raiz!=NULL) {
 		recorrer_localidades_4(raiz->datos->localidades.getRaiz(), num, contPtr);
@@ -410,7 +425,10 @@ void recorrer_ciudades_4(nodo<ciudad>* raiz, int num, int* contPtr) {
 	}
 }
 
-// Recorre el árbol binario en preorden,
+/* 
+	Recorre el árbol binario en preorden, de la estructura persona para almacenar el número de hombres y de mujeres,
+	que asisten a las diferentes iglesias.
+*/
 void recorrer_personas_5(nodo<persona>* raiz, int* hPtr, int* mPtr) {
 	if(raiz!=NULL) {
 		if(raiz->datos->genero == "M") {
@@ -423,7 +441,10 @@ void recorrer_personas_5(nodo<persona>* raiz, int* hPtr, int* mPtr) {
 	}
 }
 
-// Recorre el árbol binario en preorden,
+/* 
+	Recorre el árbol binario en preorden, para la lista personas de la estructura iglesia, 
+	y crea los apuntadores y variables que almacenan el número de hombre y de mujeres de las diferentes iglesias.
+*/
 void recorrer_iglesias_5(nodo<iglesia>* raiz) {
 	if(raiz!=NULL) {
 		int h, m = 0;
@@ -437,7 +458,7 @@ void recorrer_iglesias_5(nodo<iglesia>* raiz) {
 	}
 }
 
-// Recorre el árbol binario en preorden,
+// Recorre el árbol binario en preorden, para la lista iglesisas de la estructura localidad.
 void recorrer_localidades_5(nodo<localidad>* raiz) {
 	if(raiz!=NULL) {
 		cout<<"\tLOCALIDAD: "<<raiz->llave<<endl;
@@ -447,7 +468,7 @@ void recorrer_localidades_5(nodo<localidad>* raiz) {
 	}
 }
 
-// Recorre el árbol binario en preorden,
+// Recorre el árbol binario en preorden, para la lista localidades de la estructura ciudad.
 void recorrer_ciudades_5(nodo<ciudad>* raiz) {
 	if(raiz!=NULL) {
 		cout<<"CIUDAD: "<<raiz->llave<<endl;
@@ -649,8 +670,33 @@ void crearFeligres() {
 }
 
 // Elimina un registro del archivo iglesias.txt
-void eliminarIglesia() {
+void eliminarIglesia();
+
+// Submenú para la eliminación de registros, ubicados en los archivos iglesias.txt y database.txt
+void eliminar() {
+	cout<<"\tEliminar registros";
+	cout<<"\n=======================================";
+	cout<<"\n1. Eliminar iglesia";
+	cout<<"\n2. Eliminar feligres";
+	cout<<"\n0. Regresar al menu princial\n";
 	
+	char op;
+	cin>>op;
+	system("cls");
+	switch(op){
+		case '1':
+			cout<<"Los cambios no surguiran efecto hasta que el programa sea reiniciado.";
+			getch();
+			break;
+		case '2':
+			cout<<"Los cambios no surguiran efecto hasta que el programa sea reiniciado.";
+			getch();
+			break;
+		case '0':
+			break;
+		default:
+			cout << "¡Opcion invalida!";
+	}
 }
 
 // Submenú para las consultas de registros, ubicados en los archivos iglesias.txt y database.txt
@@ -700,7 +746,11 @@ void consultas(Arbol<ciudad>* ciudades) {
 			string nCiudad;
 			cin>>nCiudad;
 			nodo<ciudad>* c = ciudades->buscar(nCiudad);
-			recorrer_localidades_3(c->datos->localidades.getRaiz());
+			if(c != NULL) {
+				recorrer_localidades_3(c->datos->localidades.getRaiz());
+			}else {
+				cout << "La ciudad ingresada no ha sido encontrada.";
+			}
 			getch();
 			break;
 		}
@@ -711,7 +761,7 @@ void consultas(Arbol<ciudad>* ciudades) {
 			int num_ig = 0;
 		   	int* igPtr = &num_ig;
 		   	recorrer_ciudades_4(ciudades->getRaiz(), num, igPtr);
-		   	cout<<"\n Numero Iglesias: "<<num_ig<<endl;
+		   	cout<<"\n Numero Iglesias: "<<*igPtr<<endl;
 		   	getch();
 			break;
 		}
@@ -752,10 +802,10 @@ void consultas(Arbol<ciudad>* ciudades) {
 
 // Submenú para el ingreso de registros, en los archivos de iglesias.txt y database.txt
 void ingresar(Arbol<ciudad>* ciudades) {
-	cout<<"\tIngresos a la base de datos";
+	cout<<"\tIngresar registros";
 	cout<<"\n=======================================";
-	cout<<"\n1. Ingresar Iglesia";
-	cout<<"\n2. Ingresar Feligres";
+	cout<<"\n1. Ingresar iglesia";
+	cout<<"\n2. Ingresar feligres";
 	cout<<"\n0. Regresar al menu princial\n";
 	
 	char op;
@@ -764,12 +814,12 @@ void ingresar(Arbol<ciudad>* ciudades) {
 	switch(op){
 		case '1':
 			crearIglesia();
-			cout<<"¡Los cambios no surguiran efecto hasta que el programa sea reiniciado!";
+			cout<<"Los cambios no surguiran efecto hasta que el programa sea reiniciado.";
 			getch();
 			break;
 		case '2':
 			crearFeligres();
-			cout<<"¡Los cambios no surguiran efecto hasta que el programa sea reiniciado!";
+			cout<<"Los cambios no surguiran efecto hasta que el programa sea reiniciado.";
 			getch();
 			break;
 		case '0':
@@ -781,33 +831,39 @@ void ingresar(Arbol<ciudad>* ciudades) {
 
 int main() {
 	
-	Arbol<ciudad>* ciudades = new Arbol<ciudad>;
-	ciudades = buildIglesias(ciudades);
-	ciudades = buildFeligreses(ciudades);
+	Arbol<ciudad>* ciudades = new Arbol<ciudad>; // crea un apuntador a un Arbol de tipo ciudad.
+	ciudades = buildIglesias(ciudades); // lee del archivo iglesias.txt para crear las estructuras de iglesia.
+	ciudades = buildFeligreses(ciudades); // lee del archivo iglesias.txt para crear las estructuras de persona.
 	
-   char selection;
-   do {
-   	system("cls");
-   	cout<<"\tBASE DE DATOS";
-   	cout<<"\n=====================================";
-   	cout<<"\n 1. Consultar";
-   	cout<<"\n 2. Ingresar";
-   	cout<<"\n 3. Eliminar";
-   	cout<<"\n 0. Salir\n";
-   	cin>> selection;
-   	system("cls");
-   	switch(selection){
-   		case '1':
-   			consultas(ciudades);
-   			break;
-   		case '2':
-   			ingresar(ciudades);
-	   		break;
-	   	case '0':
-	   		cout << "Gracias Profe Deicy, ESTE PROGRAMA ESTA PARA UN 5!!!";
-	   		break;
-		default:
-			cout << "¡Opcion invalida!";
+	// Menú principal.
+	char selection;
+   	do {
+	   	system("cls");
+	   	cout<<"\tBASE DE DATOS DE LOS FELIGRESES";
+	   	cout<<"\n=======================================================";
+	   	cout<<"\n 1. Consultar";
+	   	cout<<"\n 2. Ingresar";
+	   	cout<<"\n 3. Eliminar";
+	   	cout<<"\n 0. Salir\n";
+	   	cin>> selection;
+	   	system("cls");
+	   	switch(selection){
+	   		case '1':
+	   			// Menú de consultas.
+	   			consultas(ciudades);
+	   			break;
+	   		case '2':
+	   			// Menú de inserciones de registros.
+	   			ingresar(ciudades);
+		   		break;
+		   	case '3':
+		   		eliminar();
+		   		break;
+		   	case '0':
+		   		cout << "Gracias Profe Deicy, ESTE PROGRAMA ESTA PARA UN 5!!!";
+		   		break;
+			default:
+				cout << "¡Opcion invalida!";
 	   }
    	
    }while(selection!='0');
